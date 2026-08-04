@@ -8,7 +8,7 @@ import { LearningPanel } from './components/LearningPanel';
 
 function MainApp() {
   const { state } = useAppStore();
-  const themeClass = state.theme === 'dark' ? 'bg-black text-white dark' : 'bg-zinc-50 text-black';
+  const themeClass = state.theme === 'dark' ? 'studio-app dark' : 'studio-app';
   
   useEffect(() => {
     if (state.theme === 'dark') {

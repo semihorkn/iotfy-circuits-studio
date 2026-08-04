@@ -9,7 +9,7 @@ interface SymbolProps {
 
 export const BatterySymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => {
     return (
-        <g transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
+        <g data-component-type="battery" aria-label="Pil" transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
             <rect x="-25" y="-20" width="50" height="40" fill="transparent" />
             
             <g filter="url(#shadow)">
@@ -28,7 +28,7 @@ export const BatterySymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => {
 
 export const ResistorSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => {
     return (
-        <g transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
+        <g data-component-type="resistor" aria-label="Direnç" transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
             <rect x="-25" y="-15" width="50" height="30" fill="transparent" />
             
             <g filter="url(#shadow)">
@@ -47,7 +47,7 @@ export const ResistorSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => 
 
 export const BulbSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => {
     return (
-        <g transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
+        <g data-component-type="bulb" aria-label="Ampul" transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
             <rect x="-25" y="-20" width="50" height="40" fill="transparent" />
             
             <circle id={`bulb-glow-${comp.id}`} cx="4" cy="0" r="18" fill="#FDE047" opacity="0" filter="blur(8px)" className="transition-opacity duration-75" />
@@ -74,7 +74,7 @@ export const BulbSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => {
 
 export const CapacitorSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => {
     return (
-        <g transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
+        <g data-component-type="capacitor" aria-label="Kondansatör" transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
             <rect x="-25" y="-20" width="50" height="40" fill="transparent" />
             
             <g filter="url(#shadow)">
@@ -101,7 +101,7 @@ export const SwitchSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => {
     };
 
     return (
-        <g transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} onClick={handleToggle} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
+        <g data-component-type="switch" role="button" tabIndex={0} aria-label={isClosed ? 'Anahtarı aç' : 'Anahtarı kapat'} transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} onClick={handleToggle} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') handleToggle(event as unknown as React.MouseEvent); }} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
             <rect x="-25" y="-20" width="50" height="40" fill="transparent" />
             
             <g filter="url(#shadow)">

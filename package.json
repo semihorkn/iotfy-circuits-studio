@@ -1,5 +1,5 @@
 {
-  "name": "react-example",
+  "name": "iotfy-circuits-studio",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"
+    ,"test": "tsx src/engine/simulation.test.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",

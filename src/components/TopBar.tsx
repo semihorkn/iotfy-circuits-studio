@@ -23,10 +23,11 @@ export const TopBar: React.FC = () => {
     };
 
     return (
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/80 dark:bg-[#121212]/80 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-2xl p-2 shadow-2xl z-20">
+        <div className="studio-topbar">
             <div className="flex items-center gap-2 px-2 border-r border-black/10 dark:border-white/10 mr-2">
                 <div className="text-zinc-800 dark:text-zinc-600 font-bold text-sm px-2 whitespace-nowrap tracking-wider">
-                    <span className="brand-mark">⚡</span> Devre Kaşifleri
+                    <span className="brand-mark">⚡</span>
+                    <span className="brand-iotfy">IOTfy</span>&nbsp;<span className="brand-product">Circuits Studio</span>
                 </div>
                 <button 
                     className="p-2 rounded-lg text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"

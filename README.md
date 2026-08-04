@@ -2,9 +2,9 @@
 <img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
 </div>
 
-# Run and deploy your AI Studio app
+# IOTfy Circuits Studio
 
-This contains everything you need to run your app locally.
+Çocukların temel elektrik-elektronik kavramlarını deneyerek öğrenebilecekleri etkileşimli devre laboratuvarı.
 
 View your app in AI Studio: https://ai.studio/apps/771299f9-0342-4950-b6d2-3cdbc21a24cb
 

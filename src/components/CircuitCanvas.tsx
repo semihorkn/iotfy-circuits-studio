@@ -2,7 +2,7 @@ import React, { useState, useRef, MouseEvent } from 'react';
 import { useAppStore } from '../store';
 import { CircuitSymbols } from './circuit/Symbols';
 import { Position } from '../types';
-import { RotateCw, Trash2, Edit2 } from 'lucide-react';
+import { RotateCw, Trash2 } from 'lucide-react';
 
 export const CircuitCanvas: React.FC = () => {
     const { state, addWire, updateComponent, removeEntity, addComponent } = useAppStore();
@@ -179,7 +179,7 @@ export const CircuitCanvas: React.FC = () => {
 
     return (
         <>
-        <div className="absolute inset-0 overflow-hidden bg-zinc-50 dark:bg-[#0A0A0A]" onWheel={handleWheel}>
+        <div className="circuit-workspace" onWheel={handleWheel}>
             {/* Grid background matching absolute zoom/pan */}
             <div 
                 className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-20"
@@ -314,14 +314,14 @@ export const CircuitCanvas: React.FC = () => {
                 <button 
                     onClick={() => updateComponent(selectedComp.id, { rotation: (selectedComp.rotation + 90) % 360 })} 
                     className="p-1.5 hover:bg-zinc-100 dark:hover:bg-[#2A2A2A] rounded-md text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors" 
-                    title="Rotate 90° (R)"
+                    title="90° döndür (R)"
                 >
                     <RotateCw size={14} />
                 </button>
                 <button 
                     onClick={() => { removeEntity(selectedComp.id); setSelectedCompId(null); }} 
                     className="p-1.5 hover:bg-zinc-100 dark:hover:bg-[#2A2A2A] rounded-md text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 transition-colors" 
-                    title="Delete Component (Del)"
+                    title="Parçayı sil (Delete)"
                 >
                     <Trash2 size={14} />
                 </button>

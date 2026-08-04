@@ -6,6 +6,7 @@ export const LearningPanel: React.FC = () => {
   const { state, engine, loadTemplate } = useAppStore();
   const [isOpen, setIsOpen] = useState(true);
   const [hasCurrent, setHasCurrent] = useState(false);
+  const [hasShortCircuit, setHasShortCircuit] = useState(false);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -13,6 +14,10 @@ export const LearningPanel: React.FC = () => {
         .filter(component => component.type === 'bulb')
         .some(component => Math.abs(engine.compCurrents.get(component.id) || 0) > 0.01);
       setHasCurrent(bulbIsOn && !state.isPaused);
+      const batteryOverload = state.components
+        .filter(component => component.type === 'battery')
+        .some(component => Math.abs(engine.compCurrents.get(component.id) || 0) > 5);
+      setHasShortCircuit(batteryOverload && !state.isPaused);
     }, 180);
     return () => window.clearInterval(timer);
   }, [engine, state.components, state.isPaused]);
@@ -20,7 +25,11 @@ export const LearningPanel: React.FC = () => {
   const hasBattery = state.components.some(component => component.type === 'battery');
   const hasBulb = state.components.some(component => component.type === 'bulb');
   const hasWire = state.wires.length > 0;
-  const completed = hasBattery && hasBulb && hasWire && hasCurrent;
+  const completed = hasBattery && hasBulb && hasWire && hasCurrent && !hasShortCircuit;
+  const resultTitle = hasShortCircuit ? 'Dikkat, kısa devre!' : completed ? 'Harika, devre tamamlandı!' : 'Henüz ışık yok';
+  const resultText = hasShortCircuit
+    ? 'Akım dirençle karşılaşmadan pile dönüyor. Devreyi durdurup bağlantıları kontrol et.'
+    : completed ? 'Akım kapalı bir yol buldu ve ampul yandı.' : 'İpucu: Yolun iki ucu da pile bağlanmalı.';
 
   if (!isOpen) return (
     <button className="mission-pill" onClick={() => setIsOpen(true)}>
@@ -40,11 +49,11 @@ export const LearningPanel: React.FC = () => {
         <MissionStep done={hasWire} label="Parçaları kabloyla bağla" />
         <MissionStep done={hasCurrent} label="Akımı çalıştır" />
       </div>
-      <div className={`result-card ${completed ? 'success' : ''}`} aria-live="polite">
+      <div className={`result-card ${completed ? 'success' : ''} ${hasShortCircuit ? 'danger' : ''}`} aria-live="polite">
         <Lightbulb size={22} />
         <div>
-          <strong>{completed ? 'Harika, devre tamamlandı!' : 'Henüz ışık yok'}</strong>
-          <span>{completed ? 'Akım kapalı bir yol buldu ve ampul yandı.' : 'İpucu: Yolun iki ucu da pile bağlanmalı.'}</span>
+          <strong>{resultTitle}</strong>
+          <span>{resultText}</span>
         </div>
       </div>
       <button className="example-button" onClick={() => loadTemplate('simple')}>Örnek devreyi göster</button>
