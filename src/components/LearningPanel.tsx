@@ -38,7 +38,7 @@ export const LearningPanel: React.FC = () => {
   );
 
   return (
-    <aside className="learning-panel compact-learning" aria-label="Öğrenme görevi">
+    <aside className="learning-panel" aria-label="Öğrenme görevi">
       <button className="panel-close" onClick={() => setIsOpen(false)} aria-label="Görev panelini kapat"><X size={18} /></button>
       <div className="mission-kicker"><Sparkles size={15} /> 1. Görev</div>
       <h2>Ampulü yak!</h2>
