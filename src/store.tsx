@@ -25,7 +25,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         particlesReady: true,
         isPaused: false,
         toolMode: 'select',
-        theme: 'dark'
+        theme: 'dark',
+        language: localStorage.getItem('iotfy-language') === 'en' ? 'en' : 'tr'
     });
 
     const engine = useRef(new SimulationEngine()).current;

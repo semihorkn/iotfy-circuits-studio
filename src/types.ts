@@ -32,4 +32,5 @@ export interface AppState {
     isPaused: boolean;
     toolMode: ComponentType | 'wire' | 'select';
     theme: 'dark' | 'light';
+    language: 'tr' | 'en';
 }

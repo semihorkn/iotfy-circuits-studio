@@ -4,9 +4,19 @@
 
 # IOTfy Circuits Studio
 
-Çocukların temel elektrik-elektronik kavramlarını deneyerek öğrenebilecekleri etkileşimli devre laboratuvarı.
+An interactive, bilingual circuit laboratory where children learn fundamental electrical and electronics concepts through hands-on experimentation.
 
-View your app in AI Studio: https://ai.studio/apps/771299f9-0342-4950-b6d2-3cdbc21a24cb
+## Features
+
+- Turkish and English interfaces with a persistent language preference
+- 13 interactive circuit components and live current/voltage measurements
+- 12 ready-to-run circuit examples
+- 10 progressive learning missions
+- Dark and light themes with adjustable workspace zoom
+
+## Live Demo
+
+https://semihorkn.github.io/iotfy-circuits-studio/
 
 ## Run Locally
 
@@ -15,6 +25,5 @@ View your app in AI Studio: https://ai.studio/apps/771299f9-0342-4950-b6d2-3cdbc
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. Run the app:
    `npm run dev`

@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../store';
-import { Play, Pause, Info, LayoutGrid, Trash2, Moon, Sun, Atom, Gauge, X, Zap } from 'lucide-react';
+import { Play, Pause, Info, LayoutGrid, Trash2, Moon, Sun, Atom, Gauge, X, Zap, Languages } from 'lucide-react';
 import { TEMPLATES } from '../templates';
 import { createPortal } from 'react-dom';
 
 export const TopBar: React.FC = () => {
     const { state, setState, clearBoard, loadTemplate } = useAppStore();
+    const en = state.language === 'en';
     const [showTemplates, setShowTemplates] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -25,6 +26,13 @@ export const TopBar: React.FC = () => {
         setState(s => ({ ...s, theme: s.theme === 'dark' ? 'light' : 'dark' }));
     };
 
+    const changeLanguage = () => setState(current => {
+        const language = current.language === 'tr' ? 'en' : 'tr';
+        localStorage.setItem('iotfy-language', language);
+        document.documentElement.lang = language;
+        return { ...current, language };
+    });
+
     const exampleInfo: Record<string, { description: string; level: string }> = {
         simple: { description: 'Anahtarla bir ampulü kontrol et.', level: 'Başlangıç' },
         series: { description: 'İki ampulün enerjiyi nasıl paylaştığını gör.', level: 'Başlangıç' },
@@ -39,6 +47,20 @@ export const TopBar: React.FC = () => {
         voltageDivider: { description: 'Potansiyometrelerle ayarlanabilir bir gerilim bölücü kur.', level: 'İleri' },
         protectedMotor: { description: 'Motoru sigorta ve ters gerilim diyoduyla koru.', level: 'İleri' },
     };
+    const exampleInfoEn: Record<string, { name: string; description: string; level: string }> = {
+        simple: { name: 'Battery, Switch and Bulb', description: 'Control a bulb with a switch.', level: 'Beginner' },
+        series: { name: 'Bulbs in Series', description: 'See how two bulbs share energy.', level: 'Beginner' },
+        parallel: { name: 'Bulbs in Parallel', description: 'Explore current in parallel branches.', level: 'Intermediate' },
+        rc: { name: 'Resistor and Capacitor', description: 'Observe a capacitor charging.', level: 'Intermediate' },
+        led: { name: 'LED and Protection Resistor', description: 'Run an LED safely with a resistor.', level: 'Beginner' },
+        motor: { name: 'Switched DC Motor', description: 'Turn electrical energy into motion.', level: 'Intermediate' },
+        buzzer: { name: 'Audio Alert Circuit', description: 'Build a switched audio alert.', level: 'Beginner' },
+        resistorBulb: { name: 'Resistor and Bulb Circuit', description: 'See how resistance limits bulb current.', level: 'Beginner' },
+        finalLab: { name: 'Grand Final Circuit', description: 'Run all core components in one circuit.', level: 'Advanced' },
+        measurementLab: { name: 'Current and Voltage Lab', description: 'Measure current and voltage drop live.', level: 'Advanced' },
+        voltageDivider: { name: 'Adjustable Voltage Divider', description: 'Build an adjustable divider with potentiometers.', level: 'Advanced' },
+        protectedMotor: { name: 'Protected Motor Control', description: 'Protect a motor with a fuse and flyback diode.', level: 'Advanced' },
+    };
 
     return (
         <div className="studio-topbar">
@@ -50,7 +72,7 @@ export const TopBar: React.FC = () => {
                 <button 
                     className="p-2 rounded-lg text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     onClick={clearBoard}
-                    title="Tahtayı temizle"
+                    title={en ? 'Clear board' : 'Tahtayı temizle'}
                 >
                     <Trash2 size={16} />
                 </button>
@@ -61,17 +83,17 @@ export const TopBar: React.FC = () => {
                     className={`nav-action ${showTemplates ? 'active' : ''}`}
                     onClick={() => setShowTemplates(!showTemplates)}
                 >
-                    <LayoutGrid size={17} /> Örnekler <span className="nav-count">{Object.keys(TEMPLATES).length}</span>
+                    <LayoutGrid size={17} /> {en ? 'Examples' : 'Örnekler'} <span className="nav-count">{Object.keys(TEMPLATES).length}</span>
                 </button>
 
                 {showTemplates && createPortal((
                     <div className="examples-gallery">
-                        <div className="examples-heading"><div><span>ÖĞREN &amp; KEŞFET</span><h2>Örnek Devreler</h2><p>Hazır bir devre seç, çalıştır ve parçaların davranışını incele.</p></div><button onClick={() => setShowTemplates(false)} aria-label="Örnekleri kapat"><X size={18} /></button></div>
+                        <div className="examples-heading"><div><span>{en ? 'LEARN & EXPLORE' : 'ÖĞREN & KEŞFET'}</span><h2>{en ? 'Example Circuits' : 'Örnek Devreler'}</h2><p>{en ? 'Choose a circuit, run it and explore how its components behave.' : 'Hazır bir devre seç, çalıştır ve parçaların davranışını incele.'}</p></div><button onClick={() => setShowTemplates(false)} aria-label={en ? 'Close examples' : 'Örnekleri kapat'}><X size={18} /></button></div>
                         <div className="examples-grid">
                             {Object.entries(TEMPLATES).map(([id, template]) => (
                                 <button key={id} className="example-card" onClick={() => { loadTemplate(id); setShowTemplates(false); }}>
                                     <div className={`example-preview preview-${id}`}><span className="preview-battery">9V</span><i></i><b></b></div>
-                                    <div className="example-copy"><span>{exampleInfo[id]?.level}</span><strong>{template.name}</strong><small>{exampleInfo[id]?.description}</small><em>{template.components.length} parça · Aç</em></div>
+                                    <div className="example-copy"><span>{en ? exampleInfoEn[id]?.level : exampleInfo[id]?.level}</span><strong>{en ? exampleInfoEn[id]?.name : template.name}</strong><small>{en ? exampleInfoEn[id]?.description : exampleInfo[id]?.description}</small><em>{template.components.length} {en ? 'components · Open' : 'parça · Aç'}</em></div>
                                 </button>
                             ))}
                         </div>
@@ -84,13 +106,13 @@ export const TopBar: React.FC = () => {
                     onClick={() => setState(s => ({ ...s, isPaused: false }))}
                     className={`px-3 py-1.5 rounded-lg text-sm transition-all flex items-center gap-2 ${!state.isPaused ? 'bg-white dark:bg-white/15 text-black dark:text-white shadow-sm' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'}`}
                 >
-                    <Play size={16} /> Çalıştır
+                    <Play size={16} /> {en ? 'Run' : 'Çalıştır'}
                 </button>
                 <button
                     onClick={() => setState(s => ({ ...s, isPaused: true }))}
                     className={`px-3 py-1.5 rounded-lg text-sm transition-all flex items-center gap-2 ${state.isPaused ? 'bg-white dark:bg-white/15 text-black dark:text-white shadow-sm' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'}`}
                 >
-                    <Pause size={16} /> Durdur
+                    <Pause size={16} /> {en ? 'Pause' : 'Durdur'}
                 </button>
             </div>
 
@@ -99,15 +121,17 @@ export const TopBar: React.FC = () => {
                     onClick={() => setState(s => ({ ...s, viewMode: 'standard', particlesReady: true }))}
                     className={`px-3 py-1.5 rounded-lg text-sm transition-all flex items-center gap-2 ${state.viewMode === 'standard' && state.particlesReady ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'}`}
                 >
-                    <Atom size={16} /> Akımı göster
+                    <Atom size={16} /> {en ? 'Show current' : 'Akımı göster'}
                 </button>
                 <button
                     onClick={() => setState(s => ({ ...s, viewMode: 'voltage', particlesReady: false }))}
                     className={`px-3 py-1.5 rounded-lg text-sm transition-all flex items-center gap-2 ${state.viewMode === 'voltage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'}`}
                 >
-                    <Gauge size={16} /> Gerilim
+                    <Gauge size={16} /> {en ? 'Voltage' : 'Gerilim'}
                 </button>
             </div>
+
+            <button className="language-toggle" onClick={changeLanguage} title={en ? 'Türkçeye geç' : 'Switch to English'} aria-label={en ? 'Türkçeye geç' : 'Switch to English'}><Languages size={16} /><span>{en ? 'TR' : 'EN'}</span></button>
 
             <div className="flex items-center border-l border-black/10 dark:border-white/10 pl-4 ml-1">
                 <button
@@ -122,9 +146,9 @@ export const TopBar: React.FC = () => {
             <div className="px-3 flex items-center text-zinc-500 dark:text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors cursor-help group relative">
                 <Info size={16} />
                 <div className="absolute right-0 top-full mt-4 w-72 p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-xl text-xs text-zinc-600 dark:text-zinc-300 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl">
-                    <p className="mb-2"><strong className="text-black dark:text-white">Kablo çiz:</strong> Kablo aracını seç, bir noktadan diğerine sürükle.</p>
-                    <p className="mb-2"><strong className="text-black dark:text-white">Deney yap:</strong> Anahtara dokun; parçaları seçip döndür veya değerlerini değiştir.</p>
-                    <p><strong className="text-black dark:text-white">Keşfet:</strong> Hazır devreleri aç ve elektriğin nasıl davrandığını gözlemle.</p>
+                    <p className="mb-2"><strong className="text-black dark:text-white">{en ? 'Draw wires:' : 'Kablo çiz:'}</strong> {en ? 'Select Wire and drag from one point to another.' : 'Kablo aracını seç, bir noktadan diğerine sürükle.'}</p>
+                    <p className="mb-2"><strong className="text-black dark:text-white">{en ? 'Experiment:' : 'Deney yap:'}</strong> {en ? 'Toggle switches; select, rotate or edit components.' : 'Anahtara dokun; parçaları seçip döndür veya değerlerini değiştir.'}</p>
+                    <p><strong className="text-black dark:text-white">{en ? 'Explore:' : 'Keşfet:'}</strong> {en ? 'Open examples and observe electricity in action.' : 'Hazır devreleri aç ve elektriğin nasıl davrandığını gözlemle.'}</p>
                 </div>
             </div>
         </div>

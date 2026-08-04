@@ -6,6 +6,7 @@ import { Maximize2, Minus, Plus, RotateCw, Trash2 } from 'lucide-react';
 
 export const CircuitCanvas: React.FC = () => {
     const { state, addWire, updateComponent, removeEntity, addComponent } = useAppStore();
+    const en = state.language === 'en';
     const [pan, setPan] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1.2);
     const [isPanning, setIsPanning] = useState(false);
@@ -302,12 +303,12 @@ export const CircuitCanvas: React.FC = () => {
             </svg>
         </div>
 
-        <div className="canvas-zoom-controls" aria-label="Devre boyutu">
-            <button onClick={() => changeZoom(-0.15)} aria-label="Devreyi küçült" title="Küçült"><Minus size={16} /></button>
+        <div className="canvas-zoom-controls" aria-label={en ? 'Circuit size' : 'Devre boyutu'}>
+            <button onClick={() => changeZoom(-0.15)} aria-label={en ? 'Zoom out' : 'Devreyi küçült'} title={en ? 'Zoom out' : 'Küçült'}><Minus size={16} /></button>
             <span aria-live="polite">%{Math.round(zoom * 100)}</span>
-            <button onClick={() => changeZoom(0.15)} aria-label="Devreyi büyüt" title="Büyüt"><Plus size={16} /></button>
+            <button onClick={() => changeZoom(0.15)} aria-label={en ? 'Zoom in' : 'Devreyi büyüt'} title={en ? 'Zoom in' : 'Büyüt'}><Plus size={16} /></button>
             <i />
-            <button onClick={resetView} aria-label="Görünümü sıfırla" title="Görünümü sıfırla"><Maximize2 size={15} /></button>
+            <button onClick={resetView} aria-label={en ? 'Reset view' : 'Görünümü sıfırla'} title={en ? 'Reset view' : 'Görünümü sıfırla'}><Maximize2 size={15} /></button>
         </div>
         
         {selectedComp && (
@@ -325,14 +326,14 @@ export const CircuitCanvas: React.FC = () => {
                 <button 
                     onClick={() => updateComponent(selectedComp.id, { rotation: (selectedComp.rotation + 90) % 360 })} 
                     className="p-1.5 hover:bg-zinc-100 dark:hover:bg-[#2A2A2A] rounded-md text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-colors" 
-                    title="90° döndür (R)"
+                    title={en ? 'Rotate 90° (R)' : '90° döndür (R)'}
                 >
                     <RotateCw size={14} />
                 </button>
                 <button 
                     onClick={() => { removeEntity(selectedComp.id); setSelectedCompId(null); }} 
                     className="p-1.5 hover:bg-zinc-100 dark:hover:bg-[#2A2A2A] rounded-md text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 transition-colors" 
-                    title="Parçayı sil (Delete)"
+                    title={en ? 'Delete component (Delete)' : 'Parçayı sil (Delete)'}
                 >
                     <Trash2 size={14} />
                 </button>

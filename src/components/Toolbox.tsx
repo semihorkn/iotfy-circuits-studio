@@ -16,28 +16,29 @@ const FuseIcon: React.FC<ToolIconProps> = props => <ToolSvg {...props}><path d="
 
 export const Toolbox: React.FC = () => {
     const { state, setState } = useAppStore();
+    const en = state.language === 'en';
 
     const tools: { mode: ComponentType | 'wire' | 'select', icon: React.FC<any>, label: string }[] = [
-        { mode: 'select', icon: MousePointer2, label: 'Seç ve taşı' },
-        { mode: 'wire', icon: Minus, label: 'Kablo' },
-        { mode: 'battery', icon: Battery, label: 'Pil' },
-        { mode: 'bulb', icon: Lightbulb, label: 'Ampul' },
+        { mode: 'select', icon: MousePointer2, label: en ? 'Select & move' : 'Seç ve taşı' },
+        { mode: 'wire', icon: Minus, label: en ? 'Wire' : 'Kablo' },
+        { mode: 'battery', icon: Battery, label: en ? 'Battery' : 'Pil' },
+        { mode: 'bulb', icon: Lightbulb, label: en ? 'Bulb' : 'Ampul' },
         { mode: 'led', icon: CircleDot, label: 'LED' },
-        { mode: 'resistor', icon: Activity, label: 'Direnç' },
-        { mode: 'capacitor', icon: CapacitorIcon, label: 'Kondansatör' },
-        { mode: 'switch', icon: ToggleLeft, label: 'Anahtar' },
+        { mode: 'resistor', icon: Activity, label: en ? 'Resistor' : 'Direnç' },
+        { mode: 'capacitor', icon: CapacitorIcon, label: en ? 'Capacitor' : 'Kondansatör' },
+        { mode: 'switch', icon: ToggleLeft, label: en ? 'Switch' : 'Anahtar' },
         { mode: 'motor', icon: Fan, label: 'Motor' },
         { mode: 'buzzer', icon: Volume2, label: 'Buzzer' },
-        { mode: 'ammeter', icon: AmmeterIcon, label: 'Ampermetre' },
-        { mode: 'voltmeter', icon: VoltmeterIcon, label: 'Voltmetre' },
-        { mode: 'potentiometer', icon: PotentiometerIcon, label: 'Potansiyometre' },
-        { mode: 'diode', icon: DiodeIcon, label: 'Diyot' },
-        { mode: 'fuse', icon: FuseIcon, label: 'Sigorta' },
+        { mode: 'ammeter', icon: AmmeterIcon, label: en ? 'Ammeter' : 'Ampermetre' },
+        { mode: 'voltmeter', icon: VoltmeterIcon, label: en ? 'Voltmeter' : 'Voltmetre' },
+        { mode: 'potentiometer', icon: PotentiometerIcon, label: en ? 'Potentiometer' : 'Potansiyometre' },
+        { mode: 'diode', icon: DiodeIcon, label: en ? 'Diode' : 'Diyot' },
+        { mode: 'fuse', icon: FuseIcon, label: en ? 'Fuse' : 'Sigorta' },
     ];
 
     return (
         <div className="kid-toolbox">
-            <div className="toolbox-title">Parçalar</div>
+            <div className="toolbox-title">{en ? 'Components' : 'Parçalar'}</div>
             {tools.map(t => {
                 const isActive = state.toolMode === t.mode;
                 return (
