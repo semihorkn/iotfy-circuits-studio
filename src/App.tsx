@@ -1,0 +1,40 @@
+import { useEffect } from 'react';
+import { AppProvider, useAppStore } from './store';
+import { CircuitCanvas } from './components/CircuitCanvas';
+import { Toolbox } from './components/Toolbox';
+import { TopBar } from './components/TopBar';
+import { PhysicsEngine } from './components/engine/PhysicsEngine';
+import { LearningPanel } from './components/LearningPanel';
+
+function MainApp() {
+  const { state } = useAppStore();
+  const themeClass = state.theme === 'dark' ? 'bg-black text-white dark' : 'bg-zinc-50 text-black';
+  
+  useEffect(() => {
+    if (state.theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.backgroundColor = '#000000';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.backgroundColor = '#fafafa';
+    }
+  }, [state.theme]);
+
+  return (
+    <div className={`relative w-screen h-screen overflow-hidden font-sans select-none ${themeClass}`}>
+      <CircuitCanvas />
+      <Toolbox />
+      <TopBar />
+      <LearningPanel />
+      <PhysicsEngine />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AppProvider>
+      <MainApp />
+    </AppProvider>
+  );
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Circuitz",
+  "description": "An interactive, visual physics engine that helps you build intuition for electricity, voltage, power, and capacitors through direct play and physics visualization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
