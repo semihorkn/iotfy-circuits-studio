@@ -1,7 +1,18 @@
 import React from 'react';
 import { useAppStore } from '../store';
-import { Battery, Lightbulb, ToggleLeft, Minus, MousePointer2, Activity, CircleDot, Fan, Volume2, Gauge, CircleGauge, SlidersHorizontal, Triangle, ShieldCheck } from 'lucide-react';
+import { Battery, Lightbulb, ToggleLeft, Minus, MousePointer2, Activity, CircleDot, Fan, Volume2 } from 'lucide-react';
 import { ComponentType } from '../types';
+
+type ToolIconProps = React.SVGProps<SVGSVGElement> & { size?: number };
+const ToolSvg: React.FC<ToolIconProps & { children: React.ReactNode }> = ({ size = 20, children, ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>{children}</svg>
+);
+const CapacitorIcon: React.FC<ToolIconProps> = props => <ToolSvg {...props}><path d="M3 12h6M15 12h6M9 6v12M15 6v12" /></ToolSvg>;
+const AmmeterIcon: React.FC<ToolIconProps> = props => <ToolSvg {...props}><circle cx="12" cy="12" r="9" /><path d="m9 16 3-9 3 9M10 13h4" /></ToolSvg>;
+const VoltmeterIcon: React.FC<ToolIconProps> = props => <ToolSvg {...props}><circle cx="12" cy="12" r="9" /><path d="m8.5 7 3.5 10 3.5-10" /></ToolSvg>;
+const PotentiometerIcon: React.FC<ToolIconProps> = props => <ToolSvg {...props}><path d="M3 14h3l2-4 3 8 3-8 2 4h5M16 3v7M13 6l3-3 3 3" /></ToolSvg>;
+const DiodeIcon: React.FC<ToolIconProps> = props => <ToolSvg {...props}><path d="M3 12h4M17 12h4M7 6v12l10-6-10-6ZM17 6v12" /></ToolSvg>;
+const FuseIcon: React.FC<ToolIconProps> = props => <ToolSvg {...props}><path d="M3 12h4M17 12h4M7 8h10v8H7zM9 12h2l1-2 1 4 1-2h1" /></ToolSvg>;
 
 export const Toolbox: React.FC = () => {
     const { state, setState } = useAppStore();
@@ -13,15 +24,15 @@ export const Toolbox: React.FC = () => {
         { mode: 'bulb', icon: Lightbulb, label: 'Ampul' },
         { mode: 'led', icon: CircleDot, label: 'LED' },
         { mode: 'resistor', icon: Activity, label: 'Direnç' },
-        { mode: 'capacitor', icon: Minus, label: 'Kondansatör' },
+        { mode: 'capacitor', icon: CapacitorIcon, label: 'Kondansatör' },
         { mode: 'switch', icon: ToggleLeft, label: 'Anahtar' },
         { mode: 'motor', icon: Fan, label: 'Motor' },
         { mode: 'buzzer', icon: Volume2, label: 'Buzzer' },
-        { mode: 'ammeter', icon: Gauge, label: 'Ampermetre' },
-        { mode: 'voltmeter', icon: CircleGauge, label: 'Voltmetre' },
-        { mode: 'potentiometer', icon: SlidersHorizontal, label: 'Potansiyometre' },
-        { mode: 'diode', icon: Triangle, label: 'Diyot' },
-        { mode: 'fuse', icon: ShieldCheck, label: 'Sigorta' },
+        { mode: 'ammeter', icon: AmmeterIcon, label: 'Ampermetre' },
+        { mode: 'voltmeter', icon: VoltmeterIcon, label: 'Voltmetre' },
+        { mode: 'potentiometer', icon: PotentiometerIcon, label: 'Potansiyometre' },
+        { mode: 'diode', icon: DiodeIcon, label: 'Diyot' },
+        { mode: 'fuse', icon: FuseIcon, label: 'Sigorta' },
     ];
 
     return (

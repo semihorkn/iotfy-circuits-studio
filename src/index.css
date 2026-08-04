@@ -18,6 +18,7 @@ button { font: inherit; }
 .dark .kid-toolbox { background:rgba(18,18,22,.92); border-color:rgba(255,255,255,.12); }
 .toolbox-title { padding:4px 8px 7px; color:#64748b; font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
 .tool-button { display:flex; align-items:center; gap:9px; width:100%; padding:10px 11px; border:0; border-radius:14px; color:#475569; background:transparent; cursor:pointer; font-size:12px; font-weight:750; text-align:left; transition:.18s ease; }
+.tool-button > svg { flex:0 0 20px; width:20px; height:20px; }
 .tool-button:hover { color:#0e8992; background:var(--iotfy-ice); transform:translateX(2px); }
 .tool-button.active { color:white; background:linear-gradient(135deg,var(--iotfy-teal),#10939d); box-shadow:0 7px 18px rgba(24,184,196,.28); }
 .dark .tool-button { color:#cbd5e1; }.dark .tool-button:hover { background:#27272a; }.dark .tool-button.active { color:white; }
