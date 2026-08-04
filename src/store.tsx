@@ -17,18 +17,27 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | null>(null);
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [state, setState] = useState<AppState>({
-        components: [],
-        wires: [],
+const createInitialState = (): AppState => {
+    const starter = TEMPLATES.simple;
+    return {
+        components: starter.components.map((component, index) => ({
+            ...component,
+            id: `starter-component-${index}`,
+            state: component.type === 'switch' ? { closed: true } : component.state
+        })) as CircuitComponent[],
+        wires: starter.wires.map((wire, index) => ({ ...wire, id: `starter-wire-${index}` })) as WireSegment[],
         viewMode: 'standard',
         particlesReady: true,
         isPaused: false,
         toolMode: 'select',
         theme: 'dark',
         language: localStorage.getItem('iotfy-language') === 'en' ? 'en' : 'tr',
-        dimension: '2d'
-    });
+        dimension: '3d'
+    };
+};
+
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [state, setState] = useState<AppState>(createInitialState);
 
     const engine = useRef(new SimulationEngine()).current;
 
