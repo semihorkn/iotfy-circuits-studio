@@ -26,7 +26,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isPaused: false,
         toolMode: 'select',
         theme: 'dark',
-        language: localStorage.getItem('iotfy-language') === 'en' ? 'en' : 'tr'
+        language: localStorage.getItem('iotfy-language') === 'en' ? 'en' : 'tr',
+        dimension: '2d'
     });
 
     const engine = useRef(new SimulationEngine()).current;

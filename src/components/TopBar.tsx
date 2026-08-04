@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../store';
-import { Play, Pause, Info, LayoutGrid, Trash2, Moon, Sun, Atom, Gauge, X, Zap, Languages } from 'lucide-react';
+import { Play, Pause, Info, LayoutGrid, Trash2, Moon, Sun, Atom, Gauge, X, Zap, Languages, Box, PanelsTopLeft } from 'lucide-react';
 import { TEMPLATES } from '../templates';
 import { createPortal } from 'react-dom';
 
@@ -132,6 +132,11 @@ export const TopBar: React.FC = () => {
             </div>
 
             <button className="language-toggle" onClick={changeLanguage} title={en ? 'Türkçeye geç' : 'Switch to English'} aria-label={en ? 'Türkçeye geç' : 'Switch to English'}><Languages size={16} /><span>{en ? 'TR' : 'EN'}</span></button>
+
+            <div className="dimension-toggle" aria-label={en ? 'Workspace dimension' : 'Çalışma alanı boyutu'}>
+                <button className={state.dimension === '2d' ? 'active' : ''} onClick={() => setState(current => ({...current, dimension:'2d'}))}><PanelsTopLeft size={15} />2D</button>
+                <button className={state.dimension === '3d' ? 'active' : ''} onClick={() => setState(current => ({...current, dimension:'3d'}))}><Box size={15} />3D</button>
+            </div>
 
             <div className="flex items-center border-l border-black/10 dark:border-white/10 pl-4 ml-1">
                 <button

@@ -33,4 +33,5 @@ export interface AppState {
     toolMode: ComponentType | 'wire' | 'select';
     theme: 'dark' | 'light';
     language: 'tr' | 'en';
+    dimension: '2d' | '3d';
 }

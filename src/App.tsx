@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { AppProvider, useAppStore } from './store';
 import { CircuitCanvas } from './components/CircuitCanvas';
 import { Toolbox } from './components/Toolbox';
 import { TopBar } from './components/TopBar';
 import { PhysicsEngine } from './components/engine/PhysicsEngine';
 import { LearningPanel } from './components/LearningPanel';
+const ThreeCircuitCanvas = lazy(() => import('./components/ThreeCircuitCanvas').then(module => ({ default: module.ThreeCircuitCanvas })));
 
 function MainApp() {
   const { state } = useAppStore();
@@ -22,7 +23,7 @@ function MainApp() {
 
   return (
     <div className={`relative w-screen h-screen overflow-hidden font-sans select-none ${themeClass}`}>
-      <CircuitCanvas />
+      {state.dimension === '3d' ? <Suspense fallback={<div className="three-loading">{state.language === 'en' ? 'Loading 3D studio…' : '3D stüdyo yükleniyor…'}</div>}><ThreeCircuitCanvas /></Suspense> : <CircuitCanvas />}
       <Toolbox />
       <TopBar />
       <LearningPanel />

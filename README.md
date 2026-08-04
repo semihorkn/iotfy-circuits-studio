@@ -13,6 +13,7 @@ An interactive, bilingual circuit laboratory where children learn fundamental el
 - 12 ready-to-run circuit examples
 - 10 progressive learning missions
 - Dark and light themes with adjustable workspace zoom
+- Switchable 2D/3D workspace powered by Three.js, with orbit controls and animated components
 
 ## Live Demo
 

@@ -56,7 +56,7 @@ export const CircuitCanvas: React.FC = () => {
         if (state.toolMode === 'wire') {
             const p = getGridSnap(e);
             setDrawingWire({ x1: p.x, y1: p.y, x2: p.x, y2: p.y });
-        } else if (state.toolMode !== 'select') {
+        } else {
             const p = getGridSnap(e);
             
             // Auto rotate based on hovering wire exactly like drag
@@ -338,7 +338,7 @@ export const CircuitCanvas: React.FC = () => {
                     <Trash2 size={14} />
                 </button>
                 
-                {selectedComp.type !== 'switch' && selectedComp.type !== 'wire' && (
+                {selectedComp.type !== 'switch' && (
                     <>
                         <div className="w-[1px] h-4 bg-zinc-200 dark:bg-[#333] mx-1"></div>
                         <div className="flex items-center gap-1.5">
