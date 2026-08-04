@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Grid, Html, Line, OrbitControls, RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
@@ -7,7 +7,7 @@ import type { CircuitComponent, WireSegment } from '../types';
 
 const world = (x: number, y: number): [number, number, number] => [(x - 400) / 48, 0.34, (y - 320) / 48];
 
-const LivePart: React.FC<{ component: CircuitComponent }> = ({ component }) => {
+const LivePart: React.FC<{ component: CircuitComponent; selected: boolean; onSelect: (id: string) => void; onDragStart: (id: string) => void }> = ({ component, selected, onSelect, onDragStart }) => {
   const { engine, updateComponent, state } = useAppStore();
   const glow = useRef<THREE.PointLight>(null);
   const rotor = useRef<THREE.Group>(null);
@@ -35,7 +35,10 @@ const LivePart: React.FC<{ component: CircuitComponent }> = ({ component }) => {
   else if (component.type === 'diode') model = <mesh rotation={[0,0,-Math.PI/2]}><coneGeometry args={[.24,.5,3]} /><meshStandardMaterial color="#149ba4" /></mesh>;
   else model = <RoundedBox args={[.6,.2,.25]} radius={.08}><meshStandardMaterial color="#f0c84b" /><Html center transform position={[0,.12,0]} scale={.13}><b className="three-part-mark">FUSE</b></Html></RoundedBox>;
 
-  return <group {...common} aria-label={label}>{terminals}{model}<Html center position={[0,.62,0]} className="three-label"><span>{label}</span></Html></group>;
+  return <group {...common} aria-label={label} onPointerDown={(event) => { event.stopPropagation(); onSelect(component.id); onDragStart(component.id); }}>
+    {selected && <mesh rotation={[-Math.PI/2,0,0]} position={[0,-.28,0]}><ringGeometry args={[.55,.65,40]} /><meshBasicMaterial color="#5eeafa" side={THREE.DoubleSide} transparent opacity={.9} /></mesh>}
+    {terminals}{model}<Html center position={[0,.62,0]} className="three-label"><button onClick={(event) => { event.stopPropagation(); onSelect(component.id); }}>{label}</button></Html>
+  </group>;
 };
 
 const CurrentDot: React.FC<{ wire: WireSegment }> = ({ wire }) => {
@@ -54,25 +57,48 @@ const CurrentDot: React.FC<{ wire: WireSegment }> = ({ wire }) => {
   return <mesh ref={ref}><sphereGeometry args={[.055,12,8]} /><meshBasicMaterial color="#5eeafa" /></mesh>;
 };
 
-const Scene = () => {
-  const { state, addComponent, setState } = useAppStore();
+const Scene: React.FC<{ selectedId: string | null; setSelectedId: (id: string | null) => void }> = ({ selectedId, setSelectedId }) => {
+  const { state, addComponent, setState, updateComponent } = useAppStore();
+  const [dragId, setDragId] = useState<string | null>(null);
   return <>
     <ambientLight intensity={.9} /><directionalLight position={[5,9,4]} intensity={2} castShadow />
-    <mesh rotation={[-Math.PI/2,0,0]} position={[0,0,0]} receiveShadow onPointerDown={(event) => {
+    <mesh rotation={[-Math.PI/2,0,0]} position={[0,0,0]} receiveShadow
+      onPointerMove={(event) => {
+        if (!dragId) return;
+        const x = Math.round((event.point.x * 48 + 400) / 20) * 20;
+        const y = Math.round((event.point.z * 48 + 320) / 20) * 20;
+        updateComponent(dragId, { x, y });
+      }}
+      onPointerUp={() => setDragId(null)} onPointerLeave={() => setDragId(null)}
+      onPointerDown={(event) => {
       if (state.toolMode !== 'select' && state.toolMode !== 'wire') {
         const x = Math.round((event.point.x * 48 + 400) / 20) * 20;
         const y = Math.round((event.point.z * 48 + 320) / 20) * 20;
         addComponent(state.toolMode, {x,y}); setState(current => ({...current,toolMode:'select'}));
-      }
+      } else setSelectedId(null);
     }}><planeGeometry args={[22,16]} /><meshStandardMaterial color={state.theme === 'dark' ? '#0b1728' : '#eaf5f5'} roughness={.88} /></mesh>
     <Grid args={[22,16]} cellSize={.42} cellThickness={.45} cellColor={state.theme === 'dark' ? '#20505b' : '#91c7cb'} sectionSize={2.1} sectionColor="#1598a1" fadeDistance={24} position={[0,.012,0]} />
     {state.wires.map(wire => { const a=world(wire.x1,wire.y1), b=world(wire.x2,wire.y2); a[1]=b[1]=.27; return <React.Fragment key={wire.id}><Line points={[a,b]} color={state.viewMode === 'voltage' ? '#a877ff' : '#65798a'} lineWidth={3} /><CurrentDot wire={wire} /></React.Fragment>; })}
-    {state.components.map(component => <LivePart key={component.id} component={component} />)}
-    <OrbitControls makeDefault minDistance={5} maxDistance={22} maxPolarAngle={Math.PI/2.15} target={[0,0,0]} />
+    {state.components.map(component => <LivePart key={component.id} component={component} selected={component.id === selectedId} onSelect={setSelectedId} onDragStart={setDragId} />)}
+    <OrbitControls makeDefault enabled={!dragId} minDistance={5} maxDistance={22} maxPolarAngle={Math.PI/2.15} target={[0,0,0]} />
   </>;
 };
 
 export const ThreeCircuitCanvas: React.FC = () => {
-  const { state } = useAppStore();
-  return <div className="three-workspace" aria-label={state.language === 'en' ? '3D circuit workspace' : '3D devre çalışma alanı'}><Canvas shadows camera={{position:[7,8,9],fov:42}} dpr={[1,1.6]}><Scene /></Canvas><div className="three-hint">{state.language === 'en' ? 'Drag to orbit · Scroll to zoom · Choose a component, then click the board' : 'Döndürmek için sürükle · Yakınlaştırmak için kaydır · Parça seçip tablaya tıkla'}</div></div>;
+  const { state, updateComponent, removeEntity } = useAppStore();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected = state.components.find(component => component.id === selectedId);
+  const en = state.language === 'en';
+  return <div className="three-workspace" aria-label={en ? '3D circuit workspace' : '3D devre çalışma alanı'}>
+    <Canvas shadows camera={{position:[7,8,9],fov:42}} dpr={[1,1.6]}><Scene selectedId={selectedId} setSelectedId={setSelectedId} /></Canvas>
+    {selected && <div className="three-editor" role="dialog" aria-label={en ? 'Edit 3D component' : '3D parçayı düzenle'}>
+      <div><strong>{en ? 'Edit component' : 'Parçayı düzenle'}</strong><span>{selected.type}</span></div>
+      <button onClick={() => updateComponent(selected.id,{rotation:(selected.rotation+90)%360})}>{en ? 'Rotate 90°' : '90° döndür'}</button>
+      {selected.type === 'switch' ? <button onClick={() => updateComponent(selected.id,{state:{closed:!selected.state?.closed}})}>{selected.state?.closed ? (en ? 'Open switch' : 'Anahtarı aç') : (en ? 'Close switch' : 'Anahtarı kapat')}</button> : <label><span>{en ? 'Value' : 'Değer'}</span><input type="number" value={selected.value} step={selected.type === 'capacitor' ? .01 : 1} onChange={event => updateComponent(selected.id,{value:Number(event.target.value) || 0})} /></label>}
+      <small>{en ? 'Drag the selected component across the board to move it.' : 'Seçili parçayı taşımak için tabla üzerinde sürükleyin.'}</small>
+      <button className="danger" onClick={() => { removeEntity(selected.id); setSelectedId(null); }}>{en ? 'Delete component' : 'Parçayı sil'}</button>
+      <button className="close" onClick={() => setSelectedId(null)} aria-label={en ? 'Close editor' : 'Düzenleyiciyi kapat'}>×</button>
+    </div>}
+    <div className="three-hint">{en ? 'Drag to orbit · Click a component to edit · Drag a component to move' : 'Döndürmek için sürükle · Düzenlemek için parçaya tıkla · Taşımak için parçayı sürükle'}</div>
+  </div>;
 };
