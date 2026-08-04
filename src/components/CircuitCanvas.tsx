@@ -2,12 +2,12 @@ import React, { useState, useRef, MouseEvent } from 'react';
 import { useAppStore } from '../store';
 import { CircuitSymbols } from './circuit/Symbols';
 import { Position } from '../types';
-import { RotateCw, Trash2 } from 'lucide-react';
+import { Maximize2, Minus, Plus, RotateCw, Trash2 } from 'lucide-react';
 
 export const CircuitCanvas: React.FC = () => {
     const { state, addWire, updateComponent, removeEntity, addComponent } = useAppStore();
     const [pan, setPan] = useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1);
+    const [zoom, setZoom] = useState(1.2);
     const [isPanning, setIsPanning] = useState(false);
     
     // Wire drawing state
@@ -35,6 +35,9 @@ export const CircuitCanvas: React.FC = () => {
             setPan(p => ({ x: p.x - e.deltaX, y: p.y - e.deltaY }));
         }
     };
+
+    const changeZoom = (delta: number) => setZoom(current => Math.min(2.5, Math.max(0.6, Number((current + delta).toFixed(2)))));
+    const resetView = () => { setZoom(1.2); setPan({ x: 0, y: 0 }); };
 
     const handleMouseDown = (e: MouseEvent) => {
         if (state.toolMode === 'select') {
@@ -297,6 +300,14 @@ export const CircuitCanvas: React.FC = () => {
                     })}
                 </g>
             </svg>
+        </div>
+
+        <div className="canvas-zoom-controls" aria-label="Devre boyutu">
+            <button onClick={() => changeZoom(-0.15)} aria-label="Devreyi küçült" title="Küçült"><Minus size={16} /></button>
+            <span aria-live="polite">%{Math.round(zoom * 100)}</span>
+            <button onClick={() => changeZoom(0.15)} aria-label="Devreyi büyüt" title="Büyüt"><Plus size={16} /></button>
+            <i />
+            <button onClick={resetView} aria-label="Görünümü sıfırla" title="Görünümü sıfırla"><Maximize2 size={15} /></button>
         </div>
         
         {selectedComp && (
