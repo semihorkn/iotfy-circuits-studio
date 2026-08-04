@@ -60,14 +60,23 @@ export const PhysicsEngine: React.FC = () => {
                 const current = engine.compCurrents.get(c.id) || 0;
                 const vdrop = engine.compVoltages.get(c.id) || 0;
                 
-                if (c.type === 'bulb') {
+                if (c.type === 'bulb' || c.type === 'led') {
                     // Nominal power for 9V, 10ohm is 8.1W
                     const power = Math.abs(current * vdrop);
-                    const lightArea = document.getElementById(`bulb-glow-${c.id}`);
+                    const lightArea = document.getElementById(`${c.type}-glow-${c.id}`);
                     if (lightArea) {
                         const opacity = Math.min(1, power / 6); 
                         lightArea.style.opacity = opacity.toString();
                     }
+                } else if (c.type === 'motor') {
+                    const rotor = document.getElementById(`motor-rotor-${c.id}`);
+                    if (rotor) {
+                        const speed = Math.min(20, Math.abs(current) * 80);
+                        rotor.style.transform = `rotate(${time * speed * 0.04}deg)`;
+                    }
+                } else if (c.type === 'buzzer') {
+                    const soundWaves = document.getElementById(`buzzer-wave-${c.id}`);
+                    if (soundWaves) soundWaves.style.opacity = Math.abs(current) > 0.01 ? '1' : '0';
                 } else if (c.type === 'capacitor') {
                      const capV = engine.capacitorVoltages.get(c.id) || 0;
                      const fillArea = document.getElementById(`cap-fill-${c.id}`);

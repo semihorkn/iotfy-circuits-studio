@@ -1,4 +1,4 @@
-export type ComponentType = 'battery' | 'bulb' | 'resistor' | 'capacitor' | 'switch';
+export type ComponentType = 'battery' | 'bulb' | 'led' | 'resistor' | 'capacitor' | 'switch' | 'motor' | 'buzzer';
 export type ViewMode = 'standard' | 'voltage' | 'power';
 
 export interface Position {

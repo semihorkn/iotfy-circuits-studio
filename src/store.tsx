@@ -42,7 +42,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const addComponent = useCallback((type: CircuitComponent['type'], pos: Position, rotation: number = 0) => {
         const id = crypto.randomUUID();
-        const value = type === 'battery' ? 9 : type === 'capacitor' ? 0.2 : type === 'resistor' ? 50 : 10;
+        const value = type === 'battery' ? 9 : type === 'capacitor' ? 0.2 : type === 'resistor' ? 50 : type === 'led' ? 30 : type === 'motor' ? 18 : type === 'buzzer' ? 40 : 10;
         setState(s => ({
             ...s,
             components: [...s.components, { id, type, x: pos.x, y: pos.y, rotation, value }],

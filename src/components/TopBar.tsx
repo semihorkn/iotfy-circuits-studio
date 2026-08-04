@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../store';
-import { Play, Pause, Info, FolderOpen, ChevronDown, Trash2, Moon, Sun, Atom, Gauge } from 'lucide-react';
+import { Play, Pause, Info, LayoutGrid, Trash2, Moon, Sun, Atom, Gauge, X, Zap } from 'lucide-react';
 import { TEMPLATES } from '../templates';
+import { createPortal } from 'react-dom';
 
 export const TopBar: React.FC = () => {
     const { state, setState, clearBoard, loadTemplate } = useAppStore();
@@ -10,6 +11,8 @@ export const TopBar: React.FC = () => {
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Element;
+            if (target.closest?.('.examples-gallery')) return;
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setShowTemplates(false);
             }
@@ -22,12 +25,22 @@ export const TopBar: React.FC = () => {
         setState(s => ({ ...s, theme: s.theme === 'dark' ? 'light' : 'dark' }));
     };
 
+    const exampleInfo: Record<string, { description: string; level: string }> = {
+        simple: { description: 'Anahtarla bir ampulü kontrol et.', level: 'Başlangıç' },
+        series: { description: 'İki ampulün enerjiyi nasıl paylaştığını gör.', level: 'Başlangıç' },
+        parallel: { description: 'Paralel kollardaki akımı keşfet.', level: 'Orta' },
+        rc: { description: 'Kondansatörün dolmasını gözlemle.', level: 'Orta' },
+        led: { description: 'LED’i dirençle güvenle çalıştır.', level: 'Başlangıç' },
+        motor: { description: 'Elektrik enerjisini harekete dönüştür.', level: 'Orta' },
+        buzzer: { description: 'Anahtarlı sesli uyarı sistemi kur.', level: 'Başlangıç' },
+    };
+
     return (
         <div className="studio-topbar">
-            <div className="flex items-center gap-2 px-2 border-r border-black/10 dark:border-white/10 mr-2">
-                <div className="text-zinc-800 dark:text-zinc-600 font-bold text-sm px-2 whitespace-nowrap tracking-wider">
-                    <span className="brand-mark">⚡</span>
-                    <span className="brand-iotfy">IOTfy</span>&nbsp;<span className="brand-product">Circuits Studio</span>
+            <div className="nav-brand-group">
+                <div className="studio-logo" aria-label="IOTfy Circuits Studio">
+                    <span className="brand-mark"><Zap size={15} fill="currentColor" /></span>
+                    <span className="brand-iotfy">IOTfy</span><span className="brand-circuits">Circuits</span><span className="brand-studio">Studio</span>
                 </div>
                 <button 
                     className="p-2 rounded-lg text-zinc-500 hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
@@ -40,31 +53,25 @@ export const TopBar: React.FC = () => {
 
             <div className="relative" ref={dropdownRef}>
                 <button 
-                    className={`px-3 py-1.5 rounded-lg text-sm transition-all flex items-center gap-2 ${showTemplates ? 'bg-black/10 dark:bg-white/15 text-black dark:text-white shadow-sm' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'}`}
+                    className={`nav-action ${showTemplates ? 'active' : ''}`}
                     onClick={() => setShowTemplates(!showTemplates)}
                 >
-                    <FolderOpen size={16} /> 
-                    Hazır Devreler
-                    <ChevronDown size={14} className={`transition-transform duration-200 ${showTemplates ? 'rotate-180' : ''}`} />
+                    <LayoutGrid size={17} /> Örnekler <span className="nav-count">{Object.keys(TEMPLATES).length}</span>
                 </button>
 
-                {showTemplates && (
-                    <div className="absolute top-full mt-2 w-48 bg-white dark:bg-[#1A1A1A] border border-zinc-200 dark:border-[#333] rounded-xl shadow-2xl py-2 z-50">
-                        <div className="px-3 md:px-4 py-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider">Keşfet</div>
-                        {Object.entries(TEMPLATES).map(([id, template]) => (
-                            <button
-                                key={id}
-                                className="w-full text-left px-4 py-2 hover:bg-blue-50/50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 text-zinc-700 dark:text-zinc-300 text-sm transition-colors"
-                                onClick={() => {
-                                    loadTemplate(id);
-                                    setShowTemplates(false);
-                                }}
-                            >
-                                {template.name}
-                            </button>
-                        ))}
+                {showTemplates && createPortal((
+                    <div className="examples-gallery">
+                        <div className="examples-heading"><div><span>ÖĞREN &amp; KEŞFET</span><h2>Örnek Devreler</h2><p>Hazır bir devre seç, çalıştır ve parçaların davranışını incele.</p></div><button onClick={() => setShowTemplates(false)} aria-label="Örnekleri kapat"><X size={18} /></button></div>
+                        <div className="examples-grid">
+                            {Object.entries(TEMPLATES).map(([id, template]) => (
+                                <button key={id} className="example-card" onClick={() => { loadTemplate(id); setShowTemplates(false); }}>
+                                    <div className={`example-preview preview-${id}`}><span className="preview-battery">9V</span><i></i><b></b></div>
+                                    <div className="example-copy"><span>{exampleInfo[id]?.level}</span><strong>{template.name}</strong><small>{exampleInfo[id]?.description}</small><em>{template.components.length} parça · Aç</em></div>
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                )}
+                ), document.body)}
             </div>
 
             <div className="flex bg-zinc-100 dark:bg-black/40 rounded-xl p-1">

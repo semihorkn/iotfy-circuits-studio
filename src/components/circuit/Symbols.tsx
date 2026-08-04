@@ -120,10 +120,46 @@ export const SwitchSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => {
     );
 };
 
+export const LedSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => (
+    <g data-component-type="led" aria-label="LED" transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
+        <rect x="-25" y="-20" width="50" height="40" fill="transparent" />
+        <circle id={`led-glow-${comp.id}`} cx="2" cy="0" r="16" fill="#ef4444" opacity="0" filter="blur(7px)" />
+        <line x1="-20" y1="0" x2="-7" y2="0" stroke="url(#metal-grad)" strokeWidth="2" />
+        <line x1="10" y1="0" x2="20" y2="0" stroke="url(#metal-grad)" strokeWidth="2" />
+        <path d="M-7,0 A9,9 0 0 1 11,0 L11,5 L-7,5 Z" fill="#dc2626" stroke="#991b1b" strokeWidth="1" filter="url(#shadow)" />
+        <path d="M-4,-1 A6,6 0 0 1 7,-2" fill="none" stroke="rgba(255,255,255,.7)" strokeWidth="2" />
+    </g>
+);
+
+export const MotorSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => (
+    <g data-component-type="motor" aria-label="DC Motor" transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
+        <rect x="-25" y="-22" width="50" height="44" fill="transparent" />
+        <line x1="-20" y1="0" x2="-14" y2="0" stroke="url(#metal-grad)" strokeWidth="2" /><line x1="14" y1="0" x2="20" y2="0" stroke="url(#metal-grad)" strokeWidth="2" />
+        <circle cx="0" cy="0" r="14" fill="#d9e5ea" stroke="#64748b" strokeWidth="2" filter="url(#shadow)" />
+        <g id={`motor-rotor-${comp.id}`} style={{ transformOrigin: '0px 0px' }}>
+            <path d="M0,-11 C5,-9 6,-4 2,0 C7,2 7,8 2,11 C-1,6 -2,3 0,0 C-6,-1 -7,-7 -4,-10 C-1,-8 0,-5 0,-1" fill="#0f929b" />
+            <circle cx="0" cy="0" r="3" fill="#172a52" />
+        </g>
+    </g>
+);
+
+export const BuzzerSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => (
+    <g data-component-type="buzzer" aria-label="Buzzer" transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
+        <rect x="-25" y="-20" width="50" height="40" fill="transparent" />
+        <line x1="-20" y1="0" x2="-12" y2="0" stroke="url(#metal-grad)" strokeWidth="2" /><line x1="12" y1="0" x2="20" y2="0" stroke="url(#metal-grad)" strokeWidth="2" />
+        <rect x="-12" y="-10" width="24" height="20" rx="6" fill="#172a52" stroke="#334155" filter="url(#shadow)" />
+        <circle cx="0" cy="0" r="4" fill="#07111e" /><text x="-8" y="-3" fontSize="6" fill="#e4ad26">+</text>
+        <g id={`buzzer-wave-${comp.id}`} opacity="0" fill="none" stroke="#e4ad26" strokeWidth="1.5"><path d="M15,-7 Q22,0 15,7" /><path d="M18,-11 Q29,0 18,11" /></g>
+    </g>
+);
+
 export const CircuitSymbols = {
     battery: BatterySymbol,
     bulb: BulbSymbol,
+    led: LedSymbol,
     resistor: ResistorSymbol,
     capacitor: CapacitorSymbol,
-    switch: SwitchSymbol
+    switch: SwitchSymbol,
+    motor: MotorSymbol,
+    buzzer: BuzzerSymbol
 };

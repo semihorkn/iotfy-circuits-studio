@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppStore } from '../store';
-import { Battery, Lightbulb, Zap, ToggleLeft, Minus, MousePointer2, Activity } from 'lucide-react';
+import { Battery, Lightbulb, ToggleLeft, Minus, MousePointer2, Activity, CircleDot, Fan, Volume2 } from 'lucide-react';
 import { ComponentType } from '../types';
 
 export const Toolbox: React.FC = () => {
@@ -11,9 +11,12 @@ export const Toolbox: React.FC = () => {
         { mode: 'wire', icon: Minus, label: 'Kablo' },
         { mode: 'battery', icon: Battery, label: 'Pil' },
         { mode: 'bulb', icon: Lightbulb, label: 'Ampul' },
+        { mode: 'led', icon: CircleDot, label: 'LED' },
         { mode: 'resistor', icon: Activity, label: 'Direnç' },
         { mode: 'capacitor', icon: Minus, label: 'Kondansatör' },
         { mode: 'switch', icon: ToggleLeft, label: 'Anahtar' },
+        { mode: 'motor', icon: Fan, label: 'Motor' },
+        { mode: 'buzzer', icon: Volume2, label: 'Buzzer' },
     ];
 
     return (

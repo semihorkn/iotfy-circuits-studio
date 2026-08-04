@@ -125,7 +125,7 @@ export class SimulationEngine {
             let G = 0;
             let I_eq = 0;
 
-            if (comp.type === 'resistor' || comp.type === 'bulb') {
+            if (comp.type === 'resistor' || comp.type === 'bulb' || comp.type === 'led' || comp.type === 'motor' || comp.type === 'buzzer') {
                 G = 1 / Math.max(0.001, comp.value);
             } else if (comp.type === 'switch') {
                 G = comp.state?.closed ? 1 / 0.001 : 1 / 1e9;
@@ -214,7 +214,7 @@ export class SimulationEngine {
             if (comp.type === 'battery') {
                 const bIdx = voltageSources.findIndex(c => c.id === comp.id);
                 current = x[n + bIdx];
-            } else if (comp.type === 'resistor' || comp.type === 'bulb') {
+            } else if (comp.type === 'resistor' || comp.type === 'bulb' || comp.type === 'led' || comp.type === 'motor' || comp.type === 'buzzer') {
                 current = (V_u - V_v) / Math.max(0.001, comp.value);
             } else if (comp.type === 'switch') {
                 const G = comp.state?.closed ? 1 / 0.001 : 1 / 1e9;
