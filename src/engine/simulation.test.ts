@@ -29,7 +29,7 @@ const closedComponents = simple.components.map(component => component.type === '
 const closedEngine = run(closedComponents, simple.wires);
 assert.ok(Math.abs(closedEngine.compCurrents.get(openBulb.id) || 0) > 0.1, 'Kapalı anahtarda ampul yanmalı');
 
-for (const templateId of ['series', 'parallel', 'rc', 'led', 'motor', 'buzzer'] as const) {
+for (const templateId of ['series', 'parallel', 'rc', 'led', 'motor', 'buzzer', 'resistorBulb', 'finalLab'] as const) {
   const circuit = instantiate(templateId);
   const components = circuit.components.map(component => component.type === 'switch' ? { ...component, state: { closed: true } } : component);
   const engine = run(components, circuit.wires, templateId === 'rc' ? 12 : 4);

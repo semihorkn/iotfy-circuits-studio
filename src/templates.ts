@@ -124,5 +124,40 @@ export const TEMPLATES: Record<string, CircuitTemplate> = {
             { x1: 460, y1: 320, x2: 460, y2: 400 }, { x1: 460, y1: 400, x2: 220, y2: 400 },
             { x1: 220, y1: 400, x2: 220, y2: 320 }
         ]
+    },
+    resistorBulb: {
+        name: "Dirençli Ampul Devresi",
+        components: [
+            { type: 'battery', x: 220, y: 300, rotation: 90, value: 9 },
+            { type: 'resistor', x: 340, y: 200, rotation: 0, value: 50 },
+            { type: 'bulb', x: 460, y: 300, rotation: 90, value: 10 }
+        ],
+        wires: [
+            { x1: 220, y1: 280, x2: 220, y2: 200 }, { x1: 220, y1: 200, x2: 320, y2: 200 },
+            { x1: 360, y1: 200, x2: 460, y2: 200 }, { x1: 460, y1: 200, x2: 460, y2: 280 },
+            { x1: 460, y1: 320, x2: 460, y2: 400 }, { x1: 460, y1: 400, x2: 220, y2: 400 },
+            { x1: 220, y1: 400, x2: 220, y2: 320 }
+        ]
+    },
+    finalLab: {
+        name: "Büyük Final Devresi",
+        components: [
+            { type: 'battery', x: 180, y: 320, rotation: 90, value: 9 },
+            { type: 'switch', x: 260, y: 180, rotation: 0, value: 0, state: { closed: true } },
+            { type: 'resistor', x: 360, y: 180, rotation: 0, value: 30 },
+            { type: 'led', x: 460, y: 180, rotation: 0, value: 30 },
+            { type: 'bulb', x: 560, y: 260, rotation: 90, value: 10 },
+            { type: 'motor', x: 560, y: 380, rotation: 90, value: 18 },
+            { type: 'buzzer', x: 440, y: 460, rotation: 180, value: 40 },
+            { type: 'capacitor', x: 300, y: 460, rotation: 180, value: 0.1 }
+        ],
+        wires: [
+            { x1: 180, y1: 300, x2: 180, y2: 180 }, { x1: 180, y1: 180, x2: 240, y2: 180 },
+            { x1: 280, y1: 180, x2: 340, y2: 180 }, { x1: 380, y1: 180, x2: 440, y2: 180 },
+            { x1: 480, y1: 180, x2: 560, y2: 180 }, { x1: 560, y1: 180, x2: 560, y2: 240 },
+            { x1: 560, y1: 280, x2: 560, y2: 360 }, { x1: 560, y1: 400, x2: 560, y2: 460 },
+            { x1: 560, y1: 460, x2: 460, y2: 460 }, { x1: 420, y1: 460, x2: 320, y2: 460 },
+            { x1: 280, y1: 460, x2: 180, y2: 460 }, { x1: 180, y1: 460, x2: 180, y2: 340 }
+        ]
     }
 };

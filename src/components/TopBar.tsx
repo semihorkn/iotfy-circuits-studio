@@ -33,6 +33,8 @@ export const TopBar: React.FC = () => {
         led: { description: 'LED’i dirençle güvenle çalıştır.', level: 'Başlangıç' },
         motor: { description: 'Elektrik enerjisini harekete dönüştür.', level: 'Orta' },
         buzzer: { description: 'Anahtarlı sesli uyarı sistemi kur.', level: 'Başlangıç' },
+        resistorBulb: { description: 'Direncin ampul akımını nasıl sınırladığını gör.', level: 'Başlangıç' },
+        finalLab: { description: 'Öğrendiğin bütün parçaları tek devrede çalıştır.', level: 'İleri' },
     };
 
     return (

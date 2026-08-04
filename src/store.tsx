@@ -19,23 +19,13 @@ const AppContext = createContext<AppContextType | null>(null);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [state, setState] = useState<AppState>({
-        components: [
-            { id: 'b1', type: 'battery', x: 200, y: 300, rotation: 90, value: 9 },
-            { id: 'l1', type: 'bulb', x: 400, y: 300, rotation: 90, value: 10 }
-        ],
-        wires: [
-            { id: 'w1', x1: 200, y1: 280, x2: 200, y2: 200 },
-            { id: 'w2', x1: 200, y1: 200, x2: 400, y2: 200 },
-            { id: 'w3', x1: 400, y1: 200, x2: 400, y2: 280 },
-            { id: 'w4', x1: 400, y1: 320, x2: 400, y2: 400 },
-            { id: 'w5', x1: 400, y1: 400, x2: 200, y2: 400 },
-            { id: 'w6', x1: 200, y1: 400, x2: 200, y2: 320 }
-        ],
+        components: [],
+        wires: [],
         viewMode: 'standard',
         particlesReady: true,
         isPaused: false,
         toolMode: 'select',
-        theme: 'light'
+        theme: 'dark'
     });
 
     const engine = useRef(new SimulationEngine()).current;

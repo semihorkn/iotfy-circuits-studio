@@ -31,6 +31,7 @@ button { font: inherit; }
 .panel-close { position:absolute; right:14px; top:14px; display:grid; place-items:center; width:32px; height:32px; border:0; border-radius:10px; color:#64748b; background:#f1f5f9; cursor:pointer; }
 .dark .panel-close { background:#27272a; color:#cbd5e1; }
 .mission-kicker { display:flex; align-items:center; gap:6px; color:#0e939d; font-size:12px; font-weight:850; letter-spacing:.06em; text-transform:uppercase; }
+.mission-progress { height:6px; margin:12px 0 10px; overflow:hidden; border-radius:999px; background:#e2e8f0; }.mission-progress span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--iotfy-teal),var(--iotfy-gold)); transition:width .45s ease; }.dark .mission-progress { background:#293548; }.mission-concept { display:inline-block; padding:4px 8px; border-radius:8px; color:#0d7880; background:#e8fafa; font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
 .learning-panel h2 { margin:10px 0 7px; font-size:25px; line-height:1.05; }
 .learning-panel > p { margin:0 0 17px; color:#64748b; font-size:13px; line-height:1.55; }
 .dark .learning-panel > p { color:#a1a1aa; }
@@ -43,6 +44,7 @@ button { font: inherit; }
 .result-card strong,.result-card span { display:block; }.result-card strong { font-size:13px; }.result-card span { margin-top:3px; font-size:11px; line-height:1.4; opacity:.8; }
 .example-button { width:100%; margin-top:12px; padding:11px 14px; border:0; border-radius:14px; color:#0d7880; background:#e8fafa; font-size:12px; font-weight:800; cursor:pointer; }
 .example-button:hover { background:#d7f5f5; }
+.mission-load { display:flex; align-items:center; justify-content:center; gap:7px; }.journey-reset { display:flex; align-items:center; justify-content:center; gap:5px; width:100%; margin-top:8px; padding:5px; border:0; color:#94a3b8; background:transparent; font-size:9px; cursor:pointer; }.journey-reset:hover { color:#ef4444; }.journey-complete { text-align:center; }.journey-complete > svg { color:var(--iotfy-gold); filter:drop-shadow(0 6px 14px rgba(228,173,38,.28)); }.journey-complete .example-button { display:flex; align-items:center; justify-content:center; gap:7px; }
 .mission-pill { position:absolute; right:22px; top:112px; z-index:20; display:flex; align-items:center; gap:8px; padding:12px 16px; border:0; border-radius:16px; color:white; background:linear-gradient(135deg,var(--iotfy-teal),#0e8992); box-shadow:0 12px 30px rgba(24,184,196,.3); font-weight:800; cursor:pointer; }
 @media (max-width:900px) { .learning-panel { right:12px; top:auto; bottom:12px; width:min(300px,calc(100vw - 190px)); } .kid-toolbox { left:12px; width:120px; max-height:calc(100vh - 130px); overflow-y:auto; } .studio-topbar { top:10px; left:10px; right:10px; justify-content:flex-start; padding-left:225px; overflow-x:auto; gap:6px; scrollbar-width:none; } .nav-brand-group { position:fixed; left:20px; z-index:3; background:inherit; }.examples-grid { grid-template-columns:repeat(2,1fr); } }
 @media (max-width:600px) {
