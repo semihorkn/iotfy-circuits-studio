@@ -5,6 +5,7 @@ import { Toolbox } from './components/Toolbox';
 import { TopBar } from './components/TopBar';
 import { PhysicsEngine } from './components/engine/PhysicsEngine';
 import { LearningPanel } from './components/LearningPanel';
+import { ComponentLibrary } from './components/ComponentLibrary';
 
 function MainApp() {
   const { state } = useAppStore();
@@ -26,6 +27,7 @@ function MainApp() {
       <Toolbox />
       <TopBar />
       <LearningPanel />
+      <ComponentLibrary />
       <PhysicsEngine />
     </div>
   );
