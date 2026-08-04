@@ -6,11 +6,14 @@ import { useAppStore } from '../store';
 import type { CircuitComponent, WireSegment } from '../types';
 
 const world = (x: number, y: number): [number, number, number] => [(x - 400) / 48, 0.34, (y - 320) / 48];
+const boardPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 
-const LivePart: React.FC<{ component: CircuitComponent; selected: boolean; onSelect: (id: string) => void; onDragStart: (id: string) => void }> = ({ component, selected, onSelect, onDragStart }) => {
+const LivePart: React.FC<{ component: CircuitComponent; selected: boolean; onSelect: (id: string) => void; onDragState: (dragging: boolean) => void }> = ({ component, selected, onSelect, onDragState }) => {
   const { engine, updateComponent, state } = useAppStore();
   const glow = useRef<THREE.PointLight>(null);
   const rotor = useRef<THREE.Group>(null);
+  const dragging = useRef(false);
+  const moved = useRef(false);
   const position = world(component.x, component.y);
   const active = Math.abs(engine.compCurrents.get(component.id) || 0) > 0.01;
   const label = state.language === 'en' ? component.type : ({ battery:'pil', bulb:'ampul', resistor:'direnç', capacitor:'kondansatör', switch:'anahtar', ammeter:'ampermetre', voltmeter:'voltmetre', potentiometer:'potansiyometre', diode:'diyot', fuse:'sigorta' } as Record<string,string>)[component.type] || component.type;
@@ -28,14 +31,33 @@ const LivePart: React.FC<{ component: CircuitComponent; selected: boolean; onSel
   else if (component.type === 'bulb' || component.type === 'led') model = <><mesh position={[0,.18,0]}><sphereGeometry args={[component.type === 'led' ? .18 : .25,24,16]} /><meshPhysicalMaterial color={active ? '#ffe45c' : component.type === 'led' ? '#d83b42' : '#dbe4e8'} emissive={active ? '#ffd52e' : '#000'} emissiveIntensity={active ? 2 : 0} transparent opacity={.9} /></mesh><pointLight ref={glow} color="#ffd52e" distance={3} /></>;
   else if (component.type === 'resistor' || component.type === 'potentiometer') model = <RoundedBox args={[.65,.23,.27]} radius={.1}><meshStandardMaterial color={component.type === 'potentiometer' ? '#169aa3' : '#d8c19c'} /><Html center transform position={[0,.13,0]} scale={.16}><b className="three-part-mark">Ω</b></Html></RoundedBox>;
   else if (component.type === 'capacitor') model = <mesh rotation={[0,0,Math.PI/2]}><cylinderGeometry args={[.2,.2,.48,24]} /><meshStandardMaterial color="#2f74a7" metalness={.25} /></mesh>;
-  else if (component.type === 'switch') model = <group onClick={(event) => { event.stopPropagation(); updateComponent(component.id,{state:{closed:!component.state?.closed}}); }}><RoundedBox args={[.62,.18,.34]} radius={.06}><meshStandardMaterial color="#25313c" /></RoundedBox><mesh position={[component.state?.closed ? .1 : -.08,.17,0]} rotation={[0,0,component.state?.closed ? 0 : -.55]}><boxGeometry args={[.4,.08,.12]} /><meshStandardMaterial color={component.state?.closed ? '#2bc97f' : '#e6ad2e'} metalness={.45} /></mesh></group>;
+  else if (component.type === 'switch') model = <group onClick={(event) => { event.stopPropagation(); if (!moved.current) updateComponent(component.id,{state:{closed:!component.state?.closed}}); }}><RoundedBox args={[.62,.18,.34]} radius={.06}><meshStandardMaterial color="#25313c" /></RoundedBox><mesh position={[component.state?.closed ? .1 : -.08,.17,0]} rotation={[0,0,component.state?.closed ? 0 : -.55]}><boxGeometry args={[.4,.08,.12]} /><meshStandardMaterial color={component.state?.closed ? '#2bc97f' : '#e6ad2e'} metalness={.45} /></mesh></group>;
   else if (component.type === 'motor') model = <group><mesh rotation={[Math.PI/2,0,0]}><cylinderGeometry args={[.32,.32,.42,28]} /><meshStandardMaterial color="#b8c7cf" metalness={.5} /></mesh><group ref={rotor} position={[0,.33,0]}><mesh><boxGeometry args={[.72,.05,.08]} /><meshStandardMaterial color="#19a9b2" /></mesh><mesh rotation={[0,Math.PI/2,0]}><boxGeometry args={[.72,.05,.08]} /><meshStandardMaterial color="#19a9b2" /></mesh></group></group>;
   else if (component.type === 'buzzer') model = <mesh><cylinderGeometry args={[.3,.3,.22,28]} /><meshStandardMaterial color="#172a52" /><Html center transform position={[0,.13,0]} scale={.16}><b className="three-part-mark">♫</b></Html></mesh>;
   else if (component.type === 'ammeter' || component.type === 'voltmeter') model = <mesh rotation={[Math.PI/2,0,0]}><cylinderGeometry args={[.3,.3,.18,28]} /><meshStandardMaterial color="#eef7f8" /><Html center transform position={[0,.1,0]} scale={.15}><b className="three-meter">{component.type === 'ammeter' ? 'A' : 'V'}</b></Html></mesh>;
   else if (component.type === 'diode') model = <mesh rotation={[0,0,-Math.PI/2]}><coneGeometry args={[.24,.5,3]} /><meshStandardMaterial color="#149ba4" /></mesh>;
   else model = <RoundedBox args={[.6,.2,.25]} radius={.08}><meshStandardMaterial color="#f0c84b" /><Html center transform position={[0,.12,0]} scale={.13}><b className="three-part-mark">FUSE</b></Html></RoundedBox>;
 
-  return <group {...common} aria-label={label} onPointerDown={(event) => { event.stopPropagation(); onSelect(component.id); onDragStart(component.id); }}>
+  return <group {...common} aria-label={label}
+    onPointerDown={(event) => {
+      event.stopPropagation(); onSelect(component.id); dragging.current = true; moved.current = false; onDragState(true);
+      (event.target as unknown as { setPointerCapture: (id: number) => void }).setPointerCapture(event.pointerId);
+    }}
+    onPointerMove={(event) => {
+      if (!dragging.current) return;
+      event.stopPropagation();
+      const point = new THREE.Vector3();
+      if (event.ray.intersectPlane(boardPlane, point)) {
+        const x = Math.round((point.x * 48 + 400) / 20) * 20;
+        const y = Math.round((point.z * 48 + 320) / 20) * 20;
+        if (x !== component.x || y !== component.y) moved.current = true;
+        updateComponent(component.id, { x, y });
+      }
+    }}
+    onPointerUp={(event) => {
+      event.stopPropagation(); dragging.current = false; onDragState(false);
+      (event.target as unknown as { releasePointerCapture: (id: number) => void }).releasePointerCapture(event.pointerId);
+    }}>
     {selected && <mesh rotation={[-Math.PI/2,0,0]} position={[0,-.28,0]}><ringGeometry args={[.55,.65,40]} /><meshBasicMaterial color="#5eeafa" side={THREE.DoubleSide} transparent opacity={.9} /></mesh>}
     {terminals}{model}<Html center position={[0,.62,0]} className="three-label"><button onClick={(event) => { event.stopPropagation(); onSelect(component.id); }}>{label}</button></Html>
   </group>;
@@ -58,18 +80,11 @@ const CurrentDot: React.FC<{ wire: WireSegment }> = ({ wire }) => {
 };
 
 const Scene: React.FC<{ selectedId: string | null; setSelectedId: (id: string | null) => void }> = ({ selectedId, setSelectedId }) => {
-  const { state, addComponent, setState, updateComponent } = useAppStore();
-  const [dragId, setDragId] = useState<string | null>(null);
+  const { state, addComponent, setState } = useAppStore();
+  const [isDragging, setIsDragging] = useState(false);
   return <>
     <ambientLight intensity={.9} /><directionalLight position={[5,9,4]} intensity={2} castShadow />
     <mesh rotation={[-Math.PI/2,0,0]} position={[0,0,0]} receiveShadow
-      onPointerMove={(event) => {
-        if (!dragId) return;
-        const x = Math.round((event.point.x * 48 + 400) / 20) * 20;
-        const y = Math.round((event.point.z * 48 + 320) / 20) * 20;
-        updateComponent(dragId, { x, y });
-      }}
-      onPointerUp={() => setDragId(null)} onPointerLeave={() => setDragId(null)}
       onPointerDown={(event) => {
       if (state.toolMode !== 'select' && state.toolMode !== 'wire') {
         const x = Math.round((event.point.x * 48 + 400) / 20) * 20;
@@ -77,10 +92,10 @@ const Scene: React.FC<{ selectedId: string | null; setSelectedId: (id: string | 
         addComponent(state.toolMode, {x,y}); setState(current => ({...current,toolMode:'select'}));
       } else setSelectedId(null);
     }}><planeGeometry args={[22,16]} /><meshStandardMaterial color={state.theme === 'dark' ? '#0b1728' : '#eaf5f5'} roughness={.88} /></mesh>
-    <Grid args={[22,16]} cellSize={.42} cellThickness={.45} cellColor={state.theme === 'dark' ? '#20505b' : '#91c7cb'} sectionSize={2.1} sectionColor="#1598a1" fadeDistance={24} position={[0,.012,0]} />
+    <Grid raycast={() => null} args={[22,16]} cellSize={.42} cellThickness={.45} cellColor={state.theme === 'dark' ? '#20505b' : '#91c7cb'} sectionSize={2.1} sectionColor="#1598a1" fadeDistance={24} position={[0,.012,0]} />
     {state.wires.map(wire => { const a=world(wire.x1,wire.y1), b=world(wire.x2,wire.y2); a[1]=b[1]=.27; return <React.Fragment key={wire.id}><Line points={[a,b]} color={state.viewMode === 'voltage' ? '#a877ff' : '#65798a'} lineWidth={3} /><CurrentDot wire={wire} /></React.Fragment>; })}
-    {state.components.map(component => <LivePart key={component.id} component={component} selected={component.id === selectedId} onSelect={setSelectedId} onDragStart={setDragId} />)}
-    <OrbitControls makeDefault enabled={!dragId} minDistance={5} maxDistance={22} maxPolarAngle={Math.PI/2.15} target={[0,0,0]} />
+    {state.components.map(component => <LivePart key={component.id} component={component} selected={component.id === selectedId} onSelect={setSelectedId} onDragState={setIsDragging} />)}
+    <OrbitControls makeDefault enabled={!isDragging} minDistance={5} maxDistance={22} maxPolarAngle={Math.PI/2.15} target={[0,0,0]} />
   </>;
 };
 
@@ -94,6 +109,12 @@ export const ThreeCircuitCanvas: React.FC = () => {
     {selected && <div className="three-editor" role="dialog" aria-label={en ? 'Edit 3D component' : '3D parçayı düzenle'}>
       <div><strong>{en ? 'Edit component' : 'Parçayı düzenle'}</strong><span>{selected.type}</span></div>
       <button onClick={() => updateComponent(selected.id,{rotation:(selected.rotation+90)%360})}>{en ? 'Rotate 90°' : '90° döndür'}</button>
+      <div className="three-nudge" aria-label={en ? 'Move component' : 'Parçayı taşı'}>
+        <button onClick={() => updateComponent(selected.id,{y:selected.y-20})}>↑</button>
+        <button onClick={() => updateComponent(selected.id,{x:selected.x-20})}>←</button>
+        <button onClick={() => updateComponent(selected.id,{x:selected.x+20})}>→</button>
+        <button onClick={() => updateComponent(selected.id,{y:selected.y+20})}>↓</button>
+      </div>
       {selected.type === 'switch' ? <button onClick={() => updateComponent(selected.id,{state:{closed:!selected.state?.closed}})}>{selected.state?.closed ? (en ? 'Open switch' : 'Anahtarı aç') : (en ? 'Close switch' : 'Anahtarı kapat')}</button> : <label><span>{en ? 'Value' : 'Değer'}</span><input type="number" value={selected.value} step={selected.type === 'capacitor' ? .01 : 1} onChange={event => updateComponent(selected.id,{value:Number(event.target.value) || 0})} /></label>}
       <small>{en ? 'Drag the selected component across the board to move it.' : 'Seçili parçayı taşımak için tabla üzerinde sürükleyin.'}</small>
       <button className="danger" onClick={() => { removeEntity(selected.id); setSelectedId(null); }}>{en ? 'Delete component' : 'Parçayı sil'}</button>
