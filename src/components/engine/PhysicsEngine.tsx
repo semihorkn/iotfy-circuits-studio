@@ -59,6 +59,10 @@ export const PhysicsEngine: React.FC = () => {
             state.components.forEach(c => {
                 const current = engine.compCurrents.get(c.id) || 0;
                 const vdrop = engine.compVoltages.get(c.id) || 0;
+                const meterReading = document.getElementById(`meter-reading-${c.id}`);
+                if (meterReading) meterReading.textContent = c.type === 'ammeter'
+                    ? `${(Math.abs(current) * 1000).toFixed(0)} mA`
+                    : `${Math.abs(vdrop).toFixed(1)} V`;
                 
                 if (c.type === 'bulb' || c.type === 'led') {
                     // Nominal power for 9V, 10ohm is 8.1W

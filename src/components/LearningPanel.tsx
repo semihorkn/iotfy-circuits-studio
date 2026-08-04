@@ -31,11 +31,11 @@ const MISSIONS: Mission[] = [
   { title: 'Enerjiyi depola', concept: 'Kondansatör', templateId: 'rc', checks: ['Direnç ve kondansatörü bağla', 'Anahtarı kapat', 'Kondansatörü 5 V üzerine şarj et'], validate: c => c.counts.capacitor >= 1 && c.counts.resistor >= 1 && c.capacitorVoltage > 5 },
   { title: 'Harekete geçir', concept: 'DC motor', templateId: 'motor', checks: ['Motoru devreye bağla', 'Anahtarı kapat', 'Motoru döndür'], validate: c => c.counts.motor >= 1 && hasCurrent(c.currents.motor) },
   { title: 'Sesli uyarı ver', concept: 'Buzzer', templateId: 'buzzer', checks: ['Buzzer ekle', 'Anahtarla kontrol et', 'Buzzerı çalıştır'], validate: c => c.counts.buzzer >= 1 && hasCurrent(c.currents.buzzer) },
-  { title: 'Büyük final', concept: 'Sistem tasarımı', templateId: 'finalLab', checks: ['Tüm sekiz parça türünü kullan', 'Anahtarı kapat', 'Işık, hareket ve uyarıyı birlikte çalıştır'], validate: c => Object.values(c.counts).every(count => count >= 1) && hasCurrent(c.currents.bulb) && hasCurrent(c.currents.led) && hasCurrent(c.currents.motor) && hasCurrent(c.currents.buzzer) && c.capacitorVoltage > 2 },
+  { title: 'Büyük final', concept: 'Sistem tasarımı', templateId: 'finalLab', checks: ['Tüm sekiz temel parçayı kullan', 'Anahtarı kapat', 'Işık, hareket ve uyarıyı birlikte çalıştır'], validate: c => (['battery', 'bulb', 'led', 'resistor', 'capacitor', 'switch', 'motor', 'buzzer'] as const).every(type => c.counts[type] >= 1) && hasCurrent(c.currents.bulb) && hasCurrent(c.currents.led) && hasCurrent(c.currents.motor) && hasCurrent(c.currents.buzzer) && c.capacitorVoltage > 2 },
 ];
 
-const emptyCounts = (): Record<ComponentType, number> => ({ battery: 0, bulb: 0, led: 0, resistor: 0, capacitor: 0, switch: 0, motor: 0, buzzer: 0 });
-const emptyCurrents = (): Record<ComponentType, number[]> => ({ battery: [], bulb: [], led: [], resistor: [], capacitor: [], switch: [], motor: [], buzzer: [] });
+const emptyCounts = (): Record<ComponentType, number> => ({ battery: 0, bulb: 0, led: 0, resistor: 0, capacitor: 0, switch: 0, motor: 0, buzzer: 0, ammeter: 0, voltmeter: 0, potentiometer: 0, diode: 0, fuse: 0 });
+const emptyCurrents = (): Record<ComponentType, number[]> => ({ battery: [], bulb: [], led: [], resistor: [], capacitor: [], switch: [], motor: [], buzzer: [], ammeter: [], voltmeter: [], potentiometer: [], diode: [], fuse: [] });
 
 export const LearningPanel: React.FC = () => {
   const { state, engine, loadTemplate, clearBoard, setState } = useAppStore();

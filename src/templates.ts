@@ -159,5 +159,61 @@ export const TEMPLATES: Record<string, CircuitTemplate> = {
             { x1: 560, y1: 460, x2: 460, y2: 460 }, { x1: 420, y1: 460, x2: 320, y2: 460 },
             { x1: 280, y1: 460, x2: 180, y2: 460 }, { x1: 180, y1: 460, x2: 180, y2: 340 }
         ]
+    },
+    measurementLab: {
+        name: "Akım ve Gerilim Ölçüm Laboratuvarı",
+        components: [
+            { type: 'battery', x: 180, y: 300, rotation: 90, value: 9 },
+            { type: 'fuse', x: 280, y: 180, rotation: 0, value: 0.001 },
+            { type: 'ammeter', x: 400, y: 180, rotation: 0, value: 0.001 },
+            { type: 'resistor', x: 520, y: 300, rotation: 90, value: 50 },
+            { type: 'voltmeter', x: 640, y: 300, rotation: 90, value: 1000000 }
+        ],
+        wires: [
+            { x1: 180, y1: 280, x2: 180, y2: 180 }, { x1: 180, y1: 180, x2: 260, y2: 180 },
+            { x1: 300, y1: 180, x2: 380, y2: 180 }, { x1: 420, y1: 180, x2: 520, y2: 180 },
+            { x1: 520, y1: 180, x2: 520, y2: 280 }, { x1: 520, y1: 320, x2: 520, y2: 420 },
+            { x1: 520, y1: 420, x2: 180, y2: 420 }, { x1: 180, y1: 420, x2: 180, y2: 320 },
+            { x1: 520, y1: 280, x2: 640, y2: 280 }, { x1: 640, y1: 280, x2: 640, y2: 280 },
+            { x1: 640, y1: 320, x2: 520, y2: 320 }
+        ]
+    },
+    voltageDivider: {
+        name: "Ayarlanabilir Gerilim Bölücü",
+        components: [
+            { type: 'battery', x: 180, y: 300, rotation: 90, value: 9 },
+            { type: 'switch', x: 300, y: 180, rotation: 0, value: 0, state: { closed: true } },
+            { type: 'potentiometer', x: 460, y: 240, rotation: 90, value: 100 },
+            { type: 'potentiometer', x: 460, y: 380, rotation: 90, value: 220 },
+            { type: 'voltmeter', x: 620, y: 380, rotation: 90, value: 1000000 },
+            { type: 'led', x: 600, y: 240, rotation: 0, value: 30 }
+        ],
+        wires: [
+            { x1: 180, y1: 280, x2: 180, y2: 180 }, { x1: 180, y1: 180, x2: 280, y2: 180 },
+            { x1: 320, y1: 180, x2: 460, y2: 180 }, { x1: 460, y1: 180, x2: 460, y2: 220 },
+            { x1: 460, y1: 260, x2: 460, y2: 360 }, { x1: 460, y1: 400, x2: 460, y2: 460 },
+            { x1: 460, y1: 460, x2: 180, y2: 460 }, { x1: 180, y1: 460, x2: 180, y2: 320 },
+            { x1: 460, y1: 260, x2: 580, y2: 260 }, { x1: 620, y1: 260, x2: 620, y2: 360 },
+            { x1: 620, y1: 400, x2: 460, y2: 400 }
+        ]
+    },
+    protectedMotor: {
+        name: "Korumalı Motor Kontrolü",
+        components: [
+            { type: 'battery', x: 180, y: 320, rotation: 90, value: 9 },
+            { type: 'fuse', x: 280, y: 180, rotation: 0, value: 0.001 },
+            { type: 'switch', x: 400, y: 180, rotation: 0, value: 0, state: { closed: true } },
+            { type: 'ammeter', x: 520, y: 180, rotation: 0, value: 0.001 },
+            { type: 'motor', x: 620, y: 320, rotation: 90, value: 18 },
+            { type: 'diode', x: 500, y: 420, rotation: 180, value: 15 }
+        ],
+        wires: [
+            { x1: 180, y1: 300, x2: 180, y2: 180 }, { x1: 180, y1: 180, x2: 260, y2: 180 },
+            { x1: 300, y1: 180, x2: 380, y2: 180 }, { x1: 420, y1: 180, x2: 500, y2: 180 },
+            { x1: 540, y1: 180, x2: 620, y2: 180 }, { x1: 620, y1: 180, x2: 620, y2: 300 },
+            { x1: 620, y1: 340, x2: 620, y2: 460 }, { x1: 620, y1: 460, x2: 180, y2: 460 },
+            { x1: 180, y1: 460, x2: 180, y2: 340 }, { x1: 620, y1: 340, x2: 620, y2: 420 },
+            { x1: 620, y1: 420, x2: 520, y2: 420 }, { x1: 480, y1: 420, x2: 620, y2: 300 }
+        ]
     }
 };

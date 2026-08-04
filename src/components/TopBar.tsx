@@ -35,6 +35,9 @@ export const TopBar: React.FC = () => {
         buzzer: { description: 'Anahtarlı sesli uyarı sistemi kur.', level: 'Başlangıç' },
         resistorBulb: { description: 'Direncin ampul akımını nasıl sınırladığını gör.', level: 'Başlangıç' },
         finalLab: { description: 'Öğrendiğin bütün parçaları tek devrede çalıştır.', level: 'İleri' },
+        measurementLab: { description: 'Akımı ve gerilim düşümünü ölçüm cihazlarıyla izle.', level: 'İleri' },
+        voltageDivider: { description: 'Potansiyometrelerle ayarlanabilir bir gerilim bölücü kur.', level: 'İleri' },
+        protectedMotor: { description: 'Motoru sigorta ve ters gerilim diyoduyla koru.', level: 'İleri' },
     };
 
     return (

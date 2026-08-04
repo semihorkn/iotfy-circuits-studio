@@ -153,6 +153,41 @@ export const BuzzerSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => (
     </g>
 );
 
+const MeterSymbol: React.FC<SymbolProps & { kind: 'ammeter' | 'voltmeter' }> = ({ comp, onMouseDown, kind }) => (
+    <g data-component-type={kind} aria-label={kind === 'ammeter' ? 'Ampermetre' : 'Voltmetre'} transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90 transition-opacity" id={`comp-${comp.id}`}>
+        <rect x="-27" y="-25" width="54" height="50" fill="transparent" />
+        <line x1="-20" y1="0" x2="-16" y2="0" stroke="url(#metal-grad)" strokeWidth="2" /><line x1="16" y1="0" x2="20" y2="0" stroke="url(#metal-grad)" strokeWidth="2" />
+        <circle cx="0" cy="0" r="16" fill="#eef7f8" stroke="#0f929b" strokeWidth="2" filter="url(#shadow)" />
+        <text x="0" y="-2" textAnchor="middle" fontSize="11" fontWeight="900" fill="#172a52">{kind === 'ammeter' ? 'A' : 'V'}</text>
+        <text id={`meter-reading-${comp.id}`} x="0" y="9" textAnchor="middle" fontSize="5.5" fontWeight="800" fill="#0f929b">0</text>
+    </g>
+);
+
+export const AmmeterSymbol: React.FC<SymbolProps> = props => <MeterSymbol {...props} kind="ammeter" />;
+export const VoltmeterSymbol: React.FC<SymbolProps> = props => <MeterSymbol {...props} kind="voltmeter" />;
+
+export const PotentiometerSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => (
+    <g data-component-type="potentiometer" aria-label="Potansiyometre" transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90" id={`comp-${comp.id}`}>
+        <rect x="-25" y="-20" width="50" height="40" fill="transparent" /><line x1="-20" y1="0" x2="-12" y2="0" stroke="url(#metal-grad)" strokeWidth="2" /><line x1="12" y1="0" x2="20" y2="0" stroke="url(#metal-grad)" strokeWidth="2" />
+        <rect x="-12" y="-5" width="24" height="10" rx="4" fill="#d8c5a5" stroke="#8b6b3e" filter="url(#shadow)" />
+        <path d="M2,-15 L2,-7 M-2,-10 L2,-6 L6,-10" fill="none" stroke="#0f929b" strokeWidth="2" />
+    </g>
+);
+
+export const DiodeSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => (
+    <g data-component-type="diode" aria-label="Diyot" transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90" id={`comp-${comp.id}`}>
+        <rect x="-25" y="-18" width="50" height="36" fill="transparent" /><line x1="-20" y1="0" x2="20" y2="0" stroke="url(#metal-grad)" strokeWidth="2" />
+        <path d="M-9,-9 L8,0 L-9,9 Z" fill="#0f929b" stroke="#086970" /><line x1="9" y1="-10" x2="9" y2="10" stroke="#172a52" strokeWidth="3" />
+    </g>
+);
+
+export const FuseSymbol: React.FC<SymbolProps> = ({ comp, onMouseDown }) => (
+    <g data-component-type="fuse" aria-label="Sigorta" transform={`translate(${comp.x}, ${comp.y}) rotate(${comp.rotation})`} onMouseDown={onMouseDown} className="cursor-pointer hover:opacity-90" id={`comp-${comp.id}`}>
+        <rect x="-25" y="-18" width="50" height="36" fill="transparent" /><line x1="-20" y1="0" x2="-14" y2="0" stroke="url(#metal-grad)" strokeWidth="2" /><line x1="14" y1="0" x2="20" y2="0" stroke="url(#metal-grad)" strokeWidth="2" />
+        <rect x="-14" y="-6" width="28" height="12" rx="5" fill="rgba(180,230,235,.42)" stroke="#75b9bd" filter="url(#shadow)" /><path d="M-9,0 L-4,-2 L2,2 L8,0" fill="none" stroke="#e4ad26" strokeWidth="2" />
+    </g>
+);
+
 export const CircuitSymbols = {
     battery: BatterySymbol,
     bulb: BulbSymbol,
@@ -161,5 +196,10 @@ export const CircuitSymbols = {
     capacitor: CapacitorSymbol,
     switch: SwitchSymbol,
     motor: MotorSymbol,
-    buzzer: BuzzerSymbol
+    buzzer: BuzzerSymbol,
+    ammeter: AmmeterSymbol,
+    voltmeter: VoltmeterSymbol,
+    potentiometer: PotentiometerSymbol,
+    diode: DiodeSymbol,
+    fuse: FuseSymbol
 };
