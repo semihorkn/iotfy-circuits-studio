@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppStore } from '../store';
-import { Battery, Lightbulb, ToggleLeft, Minus, MousePointer2, Activity, CircleDot, Fan, Volume2 } from 'lucide-react';
+import { Battery, Lightbulb, ToggleLeft, Minus, MousePointer2, Activity, CircleDot, Fan, Volume2, PackageOpen, X } from 'lucide-react';
 import { ComponentType } from '../types';
 
 type ToolIconProps = React.SVGProps<SVGSVGElement> & { size?: number };
@@ -17,6 +17,7 @@ const FuseIcon: React.FC<ToolIconProps> = props => <ToolSvg {...props}><path d="
 export const Toolbox: React.FC = () => {
     const { state, setState } = useAppStore();
     const en = state.language === 'en';
+    const [isOpen, setIsOpen] = useState(true);
 
     const tools: { mode: ComponentType | 'wire' | 'select', icon: React.FC<any>, label: string }[] = [
         { mode: 'select', icon: MousePointer2, label: en ? 'Select & move' : 'Seç ve taşı' },
@@ -36,9 +37,11 @@ export const Toolbox: React.FC = () => {
         { mode: 'fuse', icon: FuseIcon, label: en ? 'Fuse' : 'Sigorta' },
     ];
 
+    if (!isOpen) return <button className="components-pill" onClick={() => setIsOpen(true)}><PackageOpen size={18} />{en ? 'Components' : 'Parçalar'}</button>;
+
     return (
         <div className="kid-toolbox">
-            <div className="toolbox-title">{en ? 'Components' : 'Parçalar'}</div>
+            <div className="toolbox-header"><div className="toolbox-title">{en ? 'Components' : 'Parçalar'}</div><button className="toolbox-close" onClick={() => setIsOpen(false)} aria-label={en ? 'Close components' : 'Parçaları kapat'}><X size={15} /></button></div>
             {tools.map(t => {
                 const isActive = state.toolMode === t.mode;
                 return (
