@@ -3,6 +3,28 @@ import { useAppStore } from '../store';
 import { Play, Pause, Info, LayoutGrid, Trash2, Moon, Sun, Atom, Gauge, X, Zap, Languages, Box, PanelsTopLeft } from 'lucide-react';
 import { TEMPLATES } from '../templates';
 import { createPortal } from 'react-dom';
+import type { CircuitTemplate } from '../templates';
+
+const CircuitPreview: React.FC<{ template: CircuitTemplate }> = ({ template }) => {
+    const points = [...template.components.map(c => ({x:c.x,y:c.y})), ...template.wires.flatMap(w => [{x:w.x1,y:w.y1},{x:w.x2,y:w.y2}])];
+    const minX = Math.min(...points.map(p => p.x)) - 35, maxX = Math.max(...points.map(p => p.x)) + 35;
+    const minY = Math.min(...points.map(p => p.y)) - 35, maxY = Math.max(...points.map(p => p.y)) + 35;
+    const meter = (type: string) => type === 'ammeter' ? 'A' : type === 'voltmeter' ? 'V' : type === 'motor' ? 'M' : type === 'buzzer' ? '♪' : type === 'fuse' ? 'F' : type === 'potentiometer' ? 'P' : '';
+    return <div className="example-preview"><svg viewBox={`${minX} ${minY} ${maxX-minX} ${maxY-minY}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        {template.wires.map((wire,index) => <line key={`w-${index}`} x1={wire.x1} y1={wire.y1} x2={wire.x2} y2={wire.y2} className="scheme-wire" />)}
+        {template.components.map((component,index) => <g key={`c-${index}`} transform={`translate(${component.x} ${component.y}) rotate(${component.rotation})`} className={`scheme-component scheme-${component.type}`}>
+            <line x1="-20" y1="0" x2="20" y2="0" />
+            {component.type === 'battery' && <><rect x="-13" y="-10" width="26" height="20" rx="3" /><text y="4">9V</text></>}
+            {(component.type === 'bulb' || component.type === 'led') && <><circle r="12" /><path d="M-6-6 6 6M6-6-6 6" /></>}
+            {(component.type === 'resistor' || component.type === 'potentiometer') && <><path d="M-13 0-9-7-4 7 1-7 6 7 12 0" /><text y="-10">{component.type === 'potentiometer' ? '↗' : ''}</text></>}
+            {component.type === 'capacitor' && <><path d="M-5-12V12M5-12V12" /></>}
+            {component.type === 'switch' && <><circle cx="-10" r="2" /><circle cx="10" r="2" /><path d="M-8 0 7-8" /></>}
+            {component.type === 'diode' && <><path d="M-9-9V9L8 0Z" /><path d="M9-10V10" /></>}
+            {['motor','buzzer','ammeter','voltmeter'].includes(component.type) && <><circle r="12" /><text y="4">{meter(component.type)}</text></>}
+            {component.type === 'fuse' && <><rect x="-12" y="-7" width="24" height="14" rx="5" /><text y="4">F</text></>}
+        </g>)}
+    </svg></div>;
+};
 
 export const TopBar: React.FC = () => {
     const { state, setState, clearBoard, loadTemplate } = useAppStore();
@@ -86,19 +108,18 @@ export const TopBar: React.FC = () => {
                     <LayoutGrid size={17} /> {en ? 'Examples' : 'Örnekler'} <span className="nav-count">{Object.keys(TEMPLATES).length}</span>
                 </button>
 
-                {showTemplates && createPortal((
-                    <div className="examples-gallery">
+                {showTemplates && createPortal((<><div className="examples-backdrop" onClick={() => setShowTemplates(false)} />
+                    <div className="examples-gallery" role="dialog" aria-modal="true" aria-label={en ? 'Example circuits' : 'Örnek devreler'}>
                         <div className="examples-heading"><div><span>{en ? 'LEARN & EXPLORE' : 'ÖĞREN & KEŞFET'}</span><h2>{en ? 'Example Circuits' : 'Örnek Devreler'}</h2><p>{en ? 'Choose a circuit, run it and explore how its components behave.' : 'Hazır bir devre seç, çalıştır ve parçaların davranışını incele.'}</p></div><button onClick={() => setShowTemplates(false)} aria-label={en ? 'Close examples' : 'Örnekleri kapat'}><X size={18} /></button></div>
                         <div className="examples-grid">
                             {Object.entries(TEMPLATES).map(([id, template]) => (
                                 <button key={id} className="example-card" onClick={() => { loadTemplate(id); setShowTemplates(false); }}>
-                                    <div className={`example-preview preview-${id}`}><span className="preview-battery">9V</span><i></i><b></b></div>
+                                    <CircuitPreview template={template} />
                                     <div className="example-copy"><span>{en ? exampleInfoEn[id]?.level : exampleInfo[id]?.level}</span><strong>{en ? exampleInfoEn[id]?.name : template.name}</strong><small>{en ? exampleInfoEn[id]?.description : exampleInfo[id]?.description}</small><em>{template.components.length} {en ? 'components · Open' : 'parça · Aç'}</em></div>
                                 </button>
                             ))}
                         </div>
-                    </div>
-                ), document.body)}
+                    </div></>), document.body)}
             </div>
 
             <div className="flex bg-zinc-100 dark:bg-black/40 rounded-xl p-1">

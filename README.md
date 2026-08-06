@@ -11,7 +11,7 @@ An interactive, bilingual circuit laboratory where children learn fundamental el
 - Turkish and English interfaces with a persistent language preference
 - 13 interactive circuit components and live current/voltage measurements
 - 12 ready-to-run circuit examples
-- 10 progressive learning missions
+- 12 progressive learning missions aligned with the example circuits
 - Dark and light themes with adjustable workspace zoom
 - Switchable 2D/3D workspace powered by Three.js, with orbit controls and animated components
 

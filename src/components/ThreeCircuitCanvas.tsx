@@ -27,16 +27,16 @@ const LivePart: React.FC<{ component: CircuitComponent; selected: boolean; onSel
   const common = { position, rotation: [0, -component.rotation * Math.PI / 180, 0] as [number,number,number] };
   const terminals = <><mesh position={[-.48,0,0]}><cylinderGeometry args={[.055,.055,.22,12]} /><meshStandardMaterial color="#a9b2bc" metalness={.8} /></mesh><mesh position={[.48,0,0]}><cylinderGeometry args={[.055,.055,.22,12]} /><meshStandardMaterial color="#a9b2bc" metalness={.8} /></mesh></>;
   let model: React.ReactNode;
-  if (component.type === 'battery') model = <RoundedBox args={[.72,.42,.34]} radius={.08}><meshStandardMaterial color="#26323c" /><Html center transform position={[0,.01,.18]} scale={.22}><b className="three-part-mark">9V</b></Html></RoundedBox>;
+  if (component.type === 'battery') model = <RoundedBox args={[.72,.42,.34]} radius={.08}><meshStandardMaterial color="#26323c" /><Html zIndexRange={[4,0]} center transform position={[0,.01,.18]} scale={.22}><b className="three-part-mark">9V</b></Html></RoundedBox>;
   else if (component.type === 'bulb' || component.type === 'led') model = <><mesh position={[0,.18,0]}><sphereGeometry args={[component.type === 'led' ? .18 : .25,24,16]} /><meshPhysicalMaterial color={active ? '#ffe45c' : component.type === 'led' ? '#d83b42' : '#dbe4e8'} emissive={active ? '#ffd52e' : '#000'} emissiveIntensity={active ? 2 : 0} transparent opacity={.9} /></mesh><pointLight ref={glow} color="#ffd52e" distance={3} /></>;
-  else if (component.type === 'resistor' || component.type === 'potentiometer') model = <RoundedBox args={[.65,.23,.27]} radius={.1}><meshStandardMaterial color={component.type === 'potentiometer' ? '#169aa3' : '#d8c19c'} /><Html center transform position={[0,.13,0]} scale={.16}><b className="three-part-mark">Ω</b></Html></RoundedBox>;
+  else if (component.type === 'resistor' || component.type === 'potentiometer') model = <RoundedBox args={[.65,.23,.27]} radius={.1}><meshStandardMaterial color={component.type === 'potentiometer' ? '#169aa3' : '#d8c19c'} /><Html zIndexRange={[4,0]} center transform position={[0,.13,0]} scale={.16}><b className="three-part-mark">Ω</b></Html></RoundedBox>;
   else if (component.type === 'capacitor') model = <mesh rotation={[0,0,Math.PI/2]}><cylinderGeometry args={[.2,.2,.48,24]} /><meshStandardMaterial color="#2f74a7" metalness={.25} /></mesh>;
   else if (component.type === 'switch') model = <group onClick={(event) => { event.stopPropagation(); if (!moved.current) updateComponent(component.id,{state:{closed:!component.state?.closed}}); }}><RoundedBox args={[.62,.18,.34]} radius={.06}><meshStandardMaterial color="#25313c" /></RoundedBox><mesh position={[component.state?.closed ? .1 : -.08,.17,0]} rotation={[0,0,component.state?.closed ? 0 : -.55]}><boxGeometry args={[.4,.08,.12]} /><meshStandardMaterial color={component.state?.closed ? '#2bc97f' : '#e6ad2e'} metalness={.45} /></mesh></group>;
   else if (component.type === 'motor') model = <group><mesh rotation={[Math.PI/2,0,0]}><cylinderGeometry args={[.32,.32,.42,28]} /><meshStandardMaterial color="#b8c7cf" metalness={.5} /></mesh><group ref={rotor} position={[0,.33,0]}><mesh><boxGeometry args={[.72,.05,.08]} /><meshStandardMaterial color="#19a9b2" /></mesh><mesh rotation={[0,Math.PI/2,0]}><boxGeometry args={[.72,.05,.08]} /><meshStandardMaterial color="#19a9b2" /></mesh></group></group>;
-  else if (component.type === 'buzzer') model = <mesh><cylinderGeometry args={[.3,.3,.22,28]} /><meshStandardMaterial color="#172a52" /><Html center transform position={[0,.13,0]} scale={.16}><b className="three-part-mark">♫</b></Html></mesh>;
-  else if (component.type === 'ammeter' || component.type === 'voltmeter') model = <mesh rotation={[Math.PI/2,0,0]}><cylinderGeometry args={[.3,.3,.18,28]} /><meshStandardMaterial color="#eef7f8" /><Html center transform position={[0,.1,0]} scale={.15}><b className="three-meter">{component.type === 'ammeter' ? 'A' : 'V'}</b></Html></mesh>;
+  else if (component.type === 'buzzer') model = <mesh><cylinderGeometry args={[.3,.3,.22,28]} /><meshStandardMaterial color="#172a52" /><Html zIndexRange={[4,0]} center transform position={[0,.13,0]} scale={.16}><b className="three-part-mark">♫</b></Html></mesh>;
+  else if (component.type === 'ammeter' || component.type === 'voltmeter') model = <mesh rotation={[Math.PI/2,0,0]}><cylinderGeometry args={[.3,.3,.18,28]} /><meshStandardMaterial color="#eef7f8" /><Html zIndexRange={[4,0]} center transform position={[0,.1,0]} scale={.15}><b className="three-meter">{component.type === 'ammeter' ? 'A' : 'V'}</b></Html></mesh>;
   else if (component.type === 'diode') model = <mesh rotation={[0,0,-Math.PI/2]}><coneGeometry args={[.24,.5,3]} /><meshStandardMaterial color="#149ba4" /></mesh>;
-  else model = <RoundedBox args={[.6,.2,.25]} radius={.08}><meshStandardMaterial color="#f0c84b" /><Html center transform position={[0,.12,0]} scale={.13}><b className="three-part-mark">FUSE</b></Html></RoundedBox>;
+  else model = <RoundedBox args={[.6,.2,.25]} radius={.08}><meshStandardMaterial color="#f0c84b" /><Html zIndexRange={[4,0]} center transform position={[0,.12,0]} scale={.13}><b className="three-part-mark">FUSE</b></Html></RoundedBox>;
 
   return <group {...common} aria-label={label}
     onPointerDown={(event) => {
@@ -59,7 +59,7 @@ const LivePart: React.FC<{ component: CircuitComponent; selected: boolean; onSel
       (event.target as unknown as { releasePointerCapture: (id: number) => void }).releasePointerCapture(event.pointerId);
     }}>
     {selected && <mesh rotation={[-Math.PI/2,0,0]} position={[0,-.28,0]}><ringGeometry args={[.55,.65,40]} /><meshBasicMaterial color="#5eeafa" side={THREE.DoubleSide} transparent opacity={.9} /></mesh>}
-    {terminals}{model}<Html center position={[0,.62,0]} className="three-label"><button onClick={(event) => { event.stopPropagation(); onSelect(component.id); }}>{label}</button></Html>
+    {terminals}{model}<Html zIndexRange={[5,1]} center position={[0,.62,0]} className="three-label"><button onClick={(event) => { event.stopPropagation(); onSelect(component.id); }}>{label}</button></Html>
   </group>;
 };
 
